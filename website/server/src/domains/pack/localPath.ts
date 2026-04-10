@@ -1,9 +1,22 @@
 import fs from 'node:fs/promises';
+import os from 'node:os';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import type { PackOptions, PackProgressCallback, PackResult } from '../../types.js';
 import { AppError } from '../../utils/errorHandler.js';
+
+interface RuntimePackResult {
+  totalFiles: number;
+  totalCharacters: number;
+  totalTokens: number;
+  fileCharCounts: Record<string, number>;
+  fileTokenCounts: Record<string, number>;
+  suspiciousFilesResults: Array<{
+    filePath: string;
+    messages: string[];
+  }>;
+}
 
 interface RepomixRuntime {
   runDefaultAction: (
@@ -11,7 +24,7 @@ interface RepomixRuntime {
     cwd: string,
     cliOptions: Record<string, unknown>,
     progressCallback?: (message: string) => void,
-  ) => Promise<{ packResult: PackResult }>;
+  ) => Promise<{ packResult: RuntimePackResult }>;
   setLogLevel: (level: number) => void;
 }
 
@@ -124,7 +137,7 @@ export async function processLocalPath(
   onProgress?: PackProgressCallback,
 ): Promise<PackResult> {
   const resolvedPath = await validateAndResolveLocalPath(localPath);
-  const outputFilePath = `repomix-output-${randomUUID()}.txt`;
+  const outputFilePath = path.join(os.tmpdir(), `repomix-output-${randomUUID()}.txt`);
   const repomixRuntime = await loadRepomixRuntime();
 
   const cliOptions = {
@@ -153,9 +166,8 @@ export async function processLocalPath(
       return onProgress?.('processing', message);
     };
     const result = await repomixRuntime.runDefaultAction(['.'], resolvedPath, cliOptions, packProgressCallback);
-    const outputPath = path.join(resolvedPath, outputFilePath);
-    const content = await fs.readFile(outputPath, 'utf-8');
-    const { packResult } = result;
+    const content = await fs.readFile(outputFilePath, 'utf-8');
+    const packResult: RuntimePackResult = result.packResult;
 
     const suspiciousFiles =
       packResult.suspiciousFilesResults.length > 0
@@ -207,7 +219,7 @@ export async function processLocalPath(
   } finally {
     restoreWorkerEnvironment();
     try {
-      await fs.unlink(path.join(resolvedPath, outputFilePath));
+      await fs.unlink(outputFilePath);
     } catch {
       // Ignore cleanup errors
     }
