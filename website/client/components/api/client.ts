@@ -19,7 +19,8 @@ export interface FileInfo {
 }
 
 export interface PackRequest {
-  url: string;
+  url?: string;
+  localPath?: string;
   format: 'xml' | 'markdown' | 'plain';
   options: PackOptions;
   file?: File;
@@ -95,8 +96,10 @@ export async function packRepository(request: PackRequest, callbacks?: PackStrea
 
   if (request.file) {
     formData.append('file', request.file);
+  } else if (request.localPath) {
+    formData.append('localPath', request.localPath);
   } else {
-    formData.append('url', request.url);
+    formData.append('url', request.url ?? '');
   }
   formData.append('format', request.format);
   formData.append('options', JSON.stringify(request.options));

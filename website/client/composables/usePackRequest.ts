@@ -1,12 +1,13 @@
 import { computed, onMounted, ref } from 'vue';
 import type { FileInfo, PackProgressStage, PackResult } from '../components/api/client';
 import { handlePackRequest } from '../components/utils/requestHandlers';
+import { isValidAbsolutePath } from '../components/Home/localPathInput';
 import { isValidRemoteValue } from '../components/utils/validation';
 import { parseUrlParameters } from '../utils/urlParams';
 import { useHomeUiText } from '../components/Home/useHomeUiText';
 import { usePackOptions } from './usePackOptions';
 
-export type InputMode = 'url' | 'file' | 'folder';
+export type InputMode = 'url' | 'file' | 'localPath';
 
 export function usePackRequest() {
   const uiText = useHomeUiText();
@@ -38,8 +39,9 @@ export function usePackRequest() {
     switch (mode.value) {
       case 'url':
         return !!inputUrl.value && isValidRemoteValue(inputUrl.value.trim());
+      case 'localPath':
+        return !!inputUrl.value && isValidAbsolutePath(inputUrl.value.trim());
       case 'file':
-      case 'folder':
         return !!uploadedFile.value;
       default:
         return false;
@@ -104,7 +106,8 @@ export function usePackRequest() {
             progressMessage.value = message ?? null;
           },
           signal: requestController.signal,
-          file: mode.value === 'file' || mode.value === 'folder' ? uploadedFile.value || undefined : undefined,
+          file: mode.value === 'file' ? uploadedFile.value || undefined : undefined,
+          localPath: mode.value === 'localPath' ? inputUrl.value : undefined,
           messages: {
             requestTimedOut: uiText.value.errors.requestTimedOut,
             requestCancelled: uiText.value.errors.requestCancelled,

@@ -114,4 +114,9 @@ describe('generateCliCommand', () => {
     const result = generateCliCommand('https://example.com/repo;rm -rf /', undefined);
     expect(result).toBe("npx repomix --remote 'https://example.com/repo;rm -rf /'");
   });
+
+  test('should generate a local path command for absolute paths', () => {
+    const result = generateCliCommand('/Users/jones/Documents/Code/MyProject');
+    expect(result).toBe("npx repomix '/Users/jones/Documents/Code/MyProject'");
+  });
 });

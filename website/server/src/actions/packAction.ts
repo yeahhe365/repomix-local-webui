@@ -1,7 +1,9 @@
 import type { Context } from 'hono';
+import path from 'node:path';
 import { stream } from 'hono/streaming';
 import { isValidRemoteValue } from 'repomix';
 import { z } from 'zod';
+import { processLocalPath } from '../domains/pack/localPath.js';
 import { processZipFile } from '../domains/pack/processZipFile.js';
 import { processRemoteRepo } from '../domains/pack/remoteRepo.js';
 import { FILE_SIZE_LIMITS } from '../domains/pack/utils/fileUtils.js';
@@ -22,6 +24,13 @@ const packRequestSchema = z
       .max(200, 'Repository URL is too long')
       .transform((val) => val.trim())
       .refine((val) => isValidRemoteValue(val), { message: 'Invalid repository URL' })
+      .optional(),
+    localPath: z
+      .string()
+      .min(1, 'Local path is required')
+      .max(2000, 'Local path is too long')
+      .transform((val) => val.trim())
+      .refine((val) => path.isAbsolute(val), { message: 'Local path must be an absolute path' })
       .optional(),
     file: z
       .custom<File>()
@@ -63,11 +72,11 @@ const packRequestSchema = z
       .strict(),
   })
   .strict()
-  .refine((data) => data.url || data.file, {
-    message: 'Either URL or file must be provided',
+  .refine((data) => data.url || data.file || data.localPath, {
+    message: 'Either URL, local path, or file must be provided',
   })
-  .refine((data) => !(data.url && data.file), {
-    message: 'Cannot provide both URL and file',
+  .refine((data) => [data.url, data.file, data.localPath].filter(Boolean).length === 1, {
+    message: 'Provide exactly one input source',
   });
 
 export const packAction = async (c: Context) => {
@@ -89,10 +98,12 @@ export const packAction = async (c: Context) => {
     }
     const file = formData.get('file') as File | null;
     const url = formData.get('url') as string | null;
+    const localPath = formData.get('localPath') as string | null;
 
     // Validate and sanitize request data
     validatedData = validateRequest(packRequestSchema, {
       url: url || undefined,
+      localPath: localPath || undefined,
       file: file || undefined,
       format,
       options,
@@ -155,6 +166,8 @@ export const packAction = async (c: Context) => {
       let result: PackResult;
       if (validatedData.file) {
         result = await processZipFile(validatedData.file, validatedData.format, sanitizedOptions, sendProgress);
+      } else if (validatedData.localPath) {
+        result = await processLocalPath(validatedData.localPath, validatedData.format, sanitizedOptions, sendProgress);
       } else {
         result = await processRemoteRepo(
           validatedData.url as string,
@@ -173,7 +186,7 @@ export const packAction = async (c: Context) => {
         format: validatedData.format,
         repository: result.metadata.repository,
         duration: formatLatencyForDisplay(startTime),
-        inputType: validatedData.file ? 'file' : validatedData.url ? 'url' : 'unknown',
+        inputType: validatedData.file ? 'file' : validatedData.localPath ? 'localPath' : validatedData.url ? 'url' : 'unknown',
         clientInfo: {
           ip: clientInfo.ip,
           userAgent: clientInfo.userAgent,

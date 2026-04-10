@@ -18,3 +18,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    environment:
+      - ENABLE_LOCAL_PATH_MODE=true
+      - LOCAL_PATH_ALLOWLIST=/Users
+    volumes:
+      - /Users:/Users:ro

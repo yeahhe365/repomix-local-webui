@@ -12,8 +12,8 @@
           </button>
           <button
             type="button"
-            :class="{ active: mode === 'folder' }"
-            @click="setMode('folder')"
+            :class="{ active: mode === 'localPath' }"
+            @click="setMode('localPath')"
           >
             <FolderOpen size="20" class="icon" />
           </button>
@@ -33,10 +33,12 @@
             :loading="loading"
             :show-button="false"
           />
-          <TryItFolderUpload
-            v-else-if="mode === 'folder'"
-            @upload="handleFileUpload"
+          <TryItLocalPathInput
+            v-else-if="mode === 'localPath'"
+            v-model:path="inputUrl"
             :loading="loading"
+            @keydown="handleKeydown"
+            @submit="handleSubmit"
             :show-button="false"
           />
           <TryItUrlInput
@@ -115,7 +117,7 @@ import type { FileInfo } from '../api/client';
 import { isValidRemoteValue } from '../utils/validation';
 import PackButton from './PackButton.vue';
 import TryItFileUpload from './TryItFileUpload.vue';
-import TryItFolderUpload from './TryItFolderUpload.vue';
+import TryItLocalPathInput from './TryItLocalPathInput.vue';
 import TryItPackOptions from './TryItPackOptions.vue';
 import TryItResult from './TryItResult.vue';
 import TryItUrlInput from './TryItUrlInput.vue';
@@ -214,7 +216,7 @@ async function handleSubmit(event?: SubmitEvent) {
 }
 
 function handleKeydown(event: KeyboardEvent) {
-  if (event.key === 'Enter' && mode.value === 'url' && isSubmitValid.value && !loading.value) {
+  if (event.key === 'Enter' && (mode.value === 'url' || mode.value === 'localPath') && isSubmitValid.value && !loading.value) {
     handleSubmit();
   }
 }

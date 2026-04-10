@@ -1,0 +1,215 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { randomUUID } from 'node:crypto';
+import { pathToFileURL } from 'node:url';
+import type { PackOptions, PackProgressCallback, PackResult } from '../../types.js';
+import { AppError } from '../../utils/errorHandler.js';
+
+interface RepomixRuntime {
+  runDefaultAction: (
+    directories: string[],
+    cwd: string,
+    cliOptions: Record<string, unknown>,
+    progressCallback?: (message: string) => void,
+  ) => Promise<{ packResult: PackResult }>;
+  setLogLevel: (level: number) => void;
+}
+
+export function isLocalPathModeEnabled(): boolean {
+  return process.env.ENABLE_LOCAL_PATH_MODE === 'true';
+}
+
+function getAllowlistRoots(): string[] {
+  const raw = process.env.LOCAL_PATH_ALLOWLIST?.trim();
+  if (!raw) {
+    return [];
+  }
+
+  return raw
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .map((item) => path.resolve(item));
+}
+
+function isPathWithinRoot(targetPath: string, rootPath: string): boolean {
+  const relative = path.relative(rootPath, targetPath);
+  return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative));
+}
+
+async function prepareWorkerEnvironment(): Promise<() => void> {
+  const previousWorkerPath = process.env.REPOMIX_WORKER_PATH;
+
+  if (!previousWorkerPath) {
+    const repoRoot = path.resolve(import.meta.dirname, '../../../../../');
+    const builtWorkerPath = path.join(repoRoot, 'lib/shared/unifiedWorker.js');
+
+    try {
+      await fs.access(builtWorkerPath);
+      process.env.REPOMIX_WORKER_PATH = pathToFileURL(builtWorkerPath).href;
+    } catch {
+      // Ignore missing build output and keep current environment
+    }
+  }
+
+  return () => {
+    if (previousWorkerPath === undefined) {
+      delete process.env.REPOMIX_WORKER_PATH;
+    } else {
+      process.env.REPOMIX_WORKER_PATH = previousWorkerPath;
+    }
+  };
+}
+
+async function loadRepomixRuntime(): Promise<RepomixRuntime> {
+  try {
+    const repomixModule = await import('repomix');
+    return {
+      runDefaultAction: repomixModule.runDefaultAction as RepomixRuntime['runDefaultAction'],
+      setLogLevel: repomixModule.setLogLevel as RepomixRuntime['setLogLevel'],
+    };
+  } catch {
+    const fallbackBasePath = path.resolve(import.meta.dirname, '../../../../../src');
+    const [actionModule, loggerModule] = await Promise.all([
+      import(pathToFileURL(path.join(fallbackBasePath, 'cli/actions/defaultAction.js')).href),
+      import(pathToFileURL(path.join(fallbackBasePath, 'shared/logger.js')).href),
+    ]);
+
+    return {
+      runDefaultAction: actionModule.runDefaultAction as RepomixRuntime['runDefaultAction'],
+      setLogLevel: loggerModule.setLogLevel as RepomixRuntime['setLogLevel'],
+    };
+  }
+}
+
+export async function validateAndResolveLocalPath(localPath: string): Promise<string> {
+  if (!isLocalPathModeEnabled()) {
+    throw new AppError('Local path mode is disabled.', 403);
+  }
+
+  const trimmedPath = localPath.trim();
+  if (!trimmedPath) {
+    throw new AppError('Local path is required.', 400);
+  }
+
+  if (!path.isAbsolute(trimmedPath)) {
+    throw new AppError('Local path must be an absolute path.', 400);
+  }
+
+  const resolvedPath = path.resolve(trimmedPath);
+  const allowlistRoots = getAllowlistRoots();
+
+  if (allowlistRoots.length > 0 && !allowlistRoots.some((rootPath) => isPathWithinRoot(resolvedPath, rootPath))) {
+    throw new AppError('Local path is outside the allowed directories.', 403);
+  }
+
+  let stats;
+  try {
+    stats = await fs.stat(resolvedPath);
+  } catch {
+    throw new AppError('Local path does not exist.', 404);
+  }
+
+  if (!stats.isDirectory()) {
+    throw new AppError('Local path must point to a directory.', 400);
+  }
+
+  return resolvedPath;
+}
+
+export async function processLocalPath(
+  localPath: string,
+  format: string,
+  options: PackOptions,
+  onProgress?: PackProgressCallback,
+): Promise<PackResult> {
+  const resolvedPath = await validateAndResolveLocalPath(localPath);
+  const outputFilePath = `repomix-output-${randomUUID()}.txt`;
+  const repomixRuntime = await loadRepomixRuntime();
+
+  const cliOptions = {
+    output: outputFilePath,
+    style: format,
+    parsableStyle: options.outputParsable,
+    removeComments: options.removeComments,
+    removeEmptyLines: options.removeEmptyLines,
+    outputShowLineNumbers: options.showLineNumbers,
+    fileSummary: options.fileSummary,
+    directoryStructure: options.directoryStructure,
+    compress: options.compress,
+    securityCheck: true,
+    topFilesLen: 10,
+    include: options.includePatterns,
+    ignore: options.ignorePatterns,
+    quiet: true,
+  };
+
+  repomixRuntime.setLogLevel(-1);
+  const restoreWorkerEnvironment = await prepareWorkerEnvironment();
+
+  try {
+    await onProgress?.('processing');
+    const packProgressCallback = (message: string) => {
+      return onProgress?.('processing', message);
+    };
+    const result = await repomixRuntime.runDefaultAction(['.'], resolvedPath, cliOptions, packProgressCallback);
+    const outputPath = path.join(resolvedPath, outputFilePath);
+    const content = await fs.readFile(outputPath, 'utf-8');
+    const { packResult } = result;
+
+    const suspiciousFiles =
+      packResult.suspiciousFilesResults.length > 0
+        ? packResult.suspiciousFilesResults.map((suspiciousResult) => ({
+            filePath: suspiciousResult.filePath,
+            messages: suspiciousResult.messages,
+          }))
+        : undefined;
+
+    return {
+      content,
+      format,
+      metadata: {
+        repository: resolvedPath,
+        timestamp: new Date().toISOString(),
+        summary: {
+          totalFiles: packResult.totalFiles,
+          totalCharacters: packResult.totalCharacters,
+          totalTokens: packResult.totalTokens,
+        },
+        topFiles: Object.entries(packResult.fileCharCounts)
+          .map(([filePath, charCount]) => ({
+            path: filePath,
+            charCount,
+            tokenCount: packResult.fileTokenCounts[filePath] || 0,
+          }))
+          .sort((a, b) => b.charCount - a.charCount)
+          .slice(0, cliOptions.topFilesLen),
+        allFiles: Object.entries(packResult.fileCharCounts)
+          .map(([filePath, charCount]) => ({
+            path: filePath,
+            charCount,
+            selected: true,
+          }))
+          .sort((a, b) => b.charCount - a.charCount),
+        suspiciousFiles,
+      },
+    };
+  } catch (error) {
+    if (error instanceof AppError) {
+      throw error;
+    }
+
+    if (error instanceof Error) {
+      throw new AppError(`Local path processing failed.\n\n${error.message}`, 500);
+    }
+
+    throw new AppError('Local path processing failed.', 500);
+  } finally {
+    restoreWorkerEnvironment();
+    try {
+      await fs.unlink(path.join(resolvedPath, outputFilePath));
+    } catch {
+      // Ignore cleanup errors
+    }
+  }
+}

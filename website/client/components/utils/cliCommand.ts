@@ -1,4 +1,5 @@
 import { isValidRemoteValue } from './validation.js';
+import { isValidAbsolutePath } from '../Home/localPathInput.js';
 
 export interface CliCommandPackOptions {
   format?: string;
@@ -22,6 +23,8 @@ export function generateCliCommand(repositoryUrl: string | undefined, packOption
   // Add remote repository URL (only for valid remote values, not uploaded file names)
   if (repositoryUrl && isValidRemoteValue(repositoryUrl)) {
     parts.push(`--remote ${shellEscape(repositoryUrl)}`);
+  } else if (repositoryUrl && isValidAbsolutePath(repositoryUrl)) {
+    parts.push(shellEscape(repositoryUrl));
   }
 
   // Only add options if packOptions is provided

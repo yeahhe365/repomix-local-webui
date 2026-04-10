@@ -9,6 +9,7 @@ interface RequestHandlerOptions {
   onProgress?: (stage: PackProgressStage, message?: string) => void;
   signal?: AbortSignal;
   file?: File;
+  localPath?: string;
   messages?: {
     requestTimedOut?: string;
     requestCancelled?: string;
@@ -26,15 +27,18 @@ export async function handlePackRequest(
   options: PackOptions,
   handlerOptions: RequestHandlerOptions = {},
 ): Promise<void> {
-  const { onSuccess, onError, onAbort, onProgress, signal, file, messages } = handlerOptions;
+  const { onSuccess, onError, onAbort, onProgress, signal, file, localPath, messages } = handlerOptions;
   const processedUrl = url.trim();
+  const processedLocalPath = localPath?.trim();
+  const analyticsSource = processedLocalPath || processedUrl;
 
   // Track pack start
-  analyticsUtils.trackPackStart(processedUrl);
+  analyticsUtils.trackPackStart(analyticsSource);
 
   try {
     const request: PackRequest = {
-      url: processedUrl,
+      url: processedUrl || undefined,
+      localPath: localPath?.trim() || undefined,
       format,
       options,
       file,
@@ -48,7 +52,7 @@ export async function handlePackRequest(
     // Track successful pack
     if (response.metadata.summary) {
       analyticsUtils.trackPackSuccess(
-        processedUrl,
+        analyticsSource,
         response.metadata.summary.totalFiles,
         response.metadata.summary.totalCharacters,
       );
@@ -85,7 +89,7 @@ export async function handlePackRequest(
       errorMessage = messages?.unexpectedError ?? 'An unexpected error occurred';
     }
 
-    analyticsUtils.trackPackError(processedUrl, errorMessage);
+    analyticsUtils.trackPackError(analyticsSource, errorMessage);
 
     console.error('Error processing repository:', err);
     onError?.(errorMessage);

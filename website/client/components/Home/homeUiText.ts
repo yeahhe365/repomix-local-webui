@@ -57,6 +57,9 @@ export interface HomeUiText {
     urlPlaceholder: string;
     urlInputAria: string;
     invalidRepositoryUrl: string;
+    localPathPlaceholder: string;
+    localPathInputAria: string;
+    invalidLocalPath: string;
     fileSelectionWarning: (threshold: number) => string;
   };
   fileSelection: {
@@ -202,6 +205,9 @@ const enText: HomeUiText = {
     urlPlaceholder: 'GitHub repository URL or user/repo (e.g., yamadashy/repomix)',
     urlInputAria: 'GitHub repository URL',
     invalidRepositoryUrl: 'Please enter a valid GitHub repository URL (e.g., yamadashy/repomix)',
+    localPathPlaceholder: 'Absolute local path (e.g., /Users/jones/Documents/Code/MyProject)',
+    localPathInputAria: 'Absolute local path',
+    invalidLocalPath: 'Please enter a valid absolute path (e.g., /Users/jones/Documents/Code/MyProject)',
     fileSelectionWarning: (threshold) =>
       `Selecting more than ${threshold} files may cause processing issues or timeouts. Consider reducing your selection for better performance.`,
   },
@@ -354,6 +360,9 @@ const zhText: HomeUiText = {
     urlPlaceholder: 'GitHub 仓库地址或 user/repo（例如：yamadashy/repomix）',
     urlInputAria: 'GitHub 仓库地址',
     invalidRepositoryUrl: '请输入有效的 GitHub 仓库地址（例如：yamadashy/repomix）',
+    localPathPlaceholder: '本地绝对路径（例如：/Users/jones/Documents/Code/MyProject）',
+    localPathInputAria: '本地绝对路径',
+    invalidLocalPath: '请输入有效的绝对路径（例如：/Users/jones/Documents/Code/MyProject）',
     fileSelectionWarning: (threshold) =>
       `选择超过 ${threshold} 个文件可能导致处理问题或超时。建议减少选择范围以获得更好的性能。`,
   },
