@@ -25,6 +25,34 @@ permissions:
   contents: read
 
 jobs:
+  test-website:
+    name: Test Website
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version-file: .tool-versions
+          cache: npm
+      - run: npm ci
+      - name: Run website-focused tests
+        run: >
+          npm run test --
+          tests/website/client/apiBaseUrl.test.ts
+          tests/website/client/localPathBrowser.test.ts
+          tests/website/client/tryItPersistence.test.ts
+          tests/website/clientDockerfile.test.ts
+          tests/website/composeDocker.test.ts
+          tests/website/homeUiText.test.ts
+          tests/website/localPathBrowserNavigation.test.ts
+          tests/website/localPathInput.test.ts
+          tests/website/server/localPathMode.test.ts
+          tests/website/server/rateLimitMiddleware.test.ts
+          tests/website/siteLocaleConfig.test.ts
+
   lint-website-client:
     name: Lint Website Client
     runs-on: ubuntu-latest
@@ -43,6 +71,50 @@ jobs:
       - name: Lint website client
         working-directory: website/client
         run: npm run lint
+
+  build-website-client:
+    name: Build Website Client
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version-file: .tool-versions
+          cache: npm
+      - name: Install website client dependencies
+        working-directory: website/client
+        run: npm ci
+      - name: Build website client
+        working-directory: website/client
+        run: npm run docs:build
+
+  test-website-e2e:
+    name: Test Website E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version-file: .tool-versions
+          cache: npm
+      - name: Install website client dependencies
+        working-directory: website/client
+        run: npm ci
+      - name: Install Playwright browser
+        working-directory: website/client
+        run: npx playwright install --with-deps chromium
+      - name: Build website client
+        working-directory: website/client
+        run: npm run docs:build
+      - name: Run website E2E tests
+        working-directory: website/client
+        run: npm run test:e2e
 
   lint-website-server:
     name: Lint Website Server

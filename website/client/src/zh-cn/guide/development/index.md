@@ -4,8 +4,8 @@
 
 ## 如何贡献
 
-- **为仓库加星**: 通过[为仓库加星](https://github.com/yamadashy/repomix)来表示你的支持！
-- **创建问题**: 发现了 bug？有新功能的想法？通过[创建问题](https://github.com/yamadashy/repomix/issues)让我们知道。
+- **为仓库加星**: 通过[为仓库加星](https://github.com/yeahhe365/repomix-local-webui)来表示你的支持！
+- **创建问题**: 发现了 bug？有新功能的想法？通过[创建问题](https://github.com/yeahhe365/repomix-local-webui/issues)让我们知道。
 - **提交拉取请求**: 找到了可以修复或改进的地方？提交 PR 吧！
 - **传播消息**: 在社交媒体、博客或技术社区中分享你使用 Repomix 的经验。
 - **使用 Repomix**: 最有价值的反馈来自实际使用，请随时将 Repomix 集成到你自己的项目中！
@@ -14,8 +14,8 @@
 ## 快速开始
 
 ```bash
-git clone https://github.com/yamadashy/repomix.git
-cd repomix
+git clone https://github.com/yeahhe365/repomix-local-webui.git
+cd repomix-local-webui
 npm install
 ```
 
@@ -62,8 +62,8 @@ npm run lint
 
 ```bash
 # 克隆仓库
-git clone https://github.com/yamadashy/repomix.git
-cd repomix
+git clone https://github.com/yeahhe365/repomix-local-webui.git
+cd repomix-local-webui
 
 # 安装依赖
 npm install
@@ -144,5 +144,5 @@ npm publish
 
 ## 需要帮助？
 
-- [提交 Issue](https://github.com/yamadashy/repomix/issues)
+- [提交 Issue](https://github.com/yeahhe365/repomix-local-webui/issues)
 - [加入 Discord](https://discord.gg/wNYzTwZFku)

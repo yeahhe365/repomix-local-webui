@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue';
+import { FORK_REPOSITORY_URL } from '../shared/projectLinks';
 
 const isDesktop = ref(false);
 let mediaQuery: MediaQueryList | null = null;
@@ -22,8 +23,8 @@ onUnmounted(() => {
 <template>
   <div v-if="isDesktop" class="nav-github-star">
     <iframe
-      title="Star yamadashy/repomix on GitHub"
-      src="https://unpkg.com/github-buttons@2.29.1/dist/buttons.html#href=https%3A%2F%2Fgithub.com%2Fyamadashy%2Frepomix&data-text=Star&data-size=large&data-show-count=true&data-color-scheme=no-preference%3A+light%3B+light%3A+light%3B+dark%3A+dark%3B"
+      title="Star yeahhe365/repomix-local-webui on GitHub"
+      :src="`https://unpkg.com/github-buttons@2.29.1/dist/buttons.html#href=${encodeURIComponent(FORK_REPOSITORY_URL)}&data-text=Star&data-size=large&data-show-count=true&data-color-scheme=no-preference%3A+light%3B+light%3A+light%3B+dark%3A+dark%3B`"
       sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"
       scrolling="no"
       class="github-star-button"

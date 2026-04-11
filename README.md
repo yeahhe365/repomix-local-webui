@@ -66,8 +66,8 @@ This repository is a maintained fork of [yamadashy/repomix](https://github.com/y
 
 [![npm](https://img.shields.io/npm/v/repomix.svg?maxAge=1000)](https://www.npmjs.com/package/repomix)
 [![npm](https://img.shields.io/npm/d18m/repomix)](https://www.npmjs.com/package/repomix)
-[![Actions Status](https://github.com/yamadashy/repomix/actions/workflows/ci.yml/badge.svg)](https://github.com/yamadashy/repomix/actions?query=workflow%3A"ci")
-[![codecov](https://codecov.io/github/yamadashy/repomix/graph/badge.svg)](https://codecov.io/github/yamadashy/repomix)
+[![Website CI](https://github.com/yeahhe365/repomix-local-webui/actions/workflows/ci-website.yml/badge.svg)](https://github.com/yeahhe365/repomix-local-webui/actions/workflows/ci-website.yml)
+[![GitHub stars](https://img.shields.io/github/stars/yeahhe365/repomix-local-webui?style=flat&logo=github)](https://github.com/yeahhe365/repomix-local-webui)
 [![Sponsors](https://img.shields.io/github/sponsors/yamadashy?logo=github)](https://github.com/sponsors/yamadashy)
 [![Discord](https://badgen.net/discord/online-members/wNYzTwZFku?icon=discord&label=discord)](https://discord.gg/wNYzTwZFku)
 

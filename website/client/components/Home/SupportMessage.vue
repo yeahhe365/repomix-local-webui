@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Star } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
+import { FORK_REPOSITORY_URL } from '../../shared/projectLinks';
 import { useHomeUiText } from './useHomeUiText';
 
 const uiText = useHomeUiText();
@@ -16,7 +17,7 @@ const messages = [
   // },
   {
     type: 'star',
-    link: 'https://github.com/yamadashy/repomix',
+    link: FORK_REPOSITORY_URL,
     icon: Star,
     linkText: uiText.value.support.starLinkText,
     suffix: uiText.value.support.starSuffix,

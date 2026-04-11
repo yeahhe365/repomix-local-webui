@@ -19,6 +19,7 @@ export const configZhCn = defineConfig({
           items: [
             { text: '开始使用', link: '/zh-cn/guide/' },
             { text: '安装', link: '/zh-cn/guide/installation' },
+            { text: '本地部署（Docker）', link: '/zh-cn/guide/local-deployment' },
             { text: '基本用法', link: '/zh-cn/guide/usage' },
             { text: '提示示例', link: '/zh-cn/guide/prompt-examples' },
             { text: '使用场景', link: '/zh-cn/guide/use-cases' },

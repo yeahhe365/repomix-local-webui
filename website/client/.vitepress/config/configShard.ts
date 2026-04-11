@@ -2,6 +2,10 @@ import { visualizer } from 'rollup-plugin-visualizer';
 import { type ManifestOptions, VitePWA } from 'vite-plugin-pwa';
 import { defineConfig } from 'vitepress';
 import llmstxt from 'vitepress-plugin-llms';
+import {
+  FORK_REPOSITORY_URL,
+  NPM_PACKAGE_URL,
+} from '../../shared/projectLinks';
 import { configDeSearch } from './configDe';
 import { configEsSearch } from './configEs';
 import { configHiSearch } from './configHi';
@@ -21,8 +25,8 @@ const siteName = 'Repomix';
 const siteUrl = 'https://repomix.com';
 const siteDescription = 'Pack your codebase into AI-friendly formats';
 const ogImageUrl = `${siteUrl}/images/og-image-large.png`;
-const githubUrl = 'https://github.com/yamadashy/repomix';
-const npmUrl = 'https://www.npmjs.com/package/repomix';
+const githubUrl = FORK_REPOSITORY_URL;
+const npmUrl = NPM_PACKAGE_URL;
 
 const googleAnalyticsTag = 'G-7PTT4PLC69';
 

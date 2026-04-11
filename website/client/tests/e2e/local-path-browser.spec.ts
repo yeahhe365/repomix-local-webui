@@ -78,7 +78,6 @@ test('searches directories and restores recent local-path context after reload',
 
   await page.reload();
 
-  await page.locator('.tab-container button').nth(1).click();
   await expect(page.locator('input[aria-label="本地绝对路径"]')).toHaveValue('/Users/jones/Desktop/superpowers');
   await page.getByRole('button', { name: '浏览本地目录' }).click();
 

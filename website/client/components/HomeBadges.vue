@@ -1,12 +1,12 @@
 <template>
   <div class="home-badges">
-    <a href="https://www.npmjs.com/package/repomix" target="_blank" rel="noopener noreferrer">
+    <a :href="NPM_PACKAGE_URL" target="_blank" rel="noopener noreferrer">
       <img
         src="https://img.shields.io/npm/v/repomix.svg?maxAge=1000"
         alt="npm version"
       />
     </a>
-    <a href="https://www.npmjs.com/package/repomix" target="_blank" rel="noopener noreferrer">
+    <a :href="NPM_PACKAGE_URL" target="_blank" rel="noopener noreferrer">
       <img
         src="https://img.shields.io/npm/d18m/repomix"
         alt="npm downloads"
@@ -19,20 +19,24 @@
         alt="Discord"
       />
     </a>
-    <a href="https://github.com/sponsors/yamadashy" target="_blank" rel="noopener noreferrer">
+    <a :href="UPSTREAM_SPONSORS_URL" target="_blank" rel="noopener noreferrer">
       <img
         src="https://img.shields.io/github/sponsors/yamadashy?logo=github"
         alt="Sponsors"
       />
     </a>
-    <a href="https://github.com/yamadashy/repomix" target="_blank" rel="noopener noreferrer">
+    <a :href="FORK_REPOSITORY_URL" target="_blank" rel="noopener noreferrer">
       <img
-        src="https://img.shields.io/github/stars/yamadashy/repomix?style=flat&logo=github"
+        src="https://img.shields.io/github/stars/yeahhe365/repomix-local-webui?style=flat&logo=github"
         alt="GitHub stars"
       />
     </a>
   </div>
 </template>
+
+<script setup lang="ts">
+import { FORK_REPOSITORY_URL, NPM_PACKAGE_URL, UPSTREAM_SPONSORS_URL } from '../shared/projectLinks';
+</script>
 
 <style scoped>
 .home-badges {

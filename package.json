@@ -58,13 +58,13 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/yamadashy/repomix.git"
+    "url": "git://github.com/yeahhe365/repomix-local-webui.git"
   },
   "bugs": {
-    "url": "https://github.com/yamadashy/repomix/issues"
+    "url": "https://github.com/yeahhe365/repomix-local-webui/issues"
   },
   "author": "Kazuki Yamada <koukun0120@gmail.com>",
-  "homepage": "https://github.com/yamadashy/repomix",
+  "homepage": "https://github.com/yeahhe365/repomix-local-webui",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
