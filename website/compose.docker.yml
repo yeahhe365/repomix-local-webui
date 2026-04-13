@@ -1,6 +1,8 @@
 # Run the packaged website and API using production-style Docker images
 # $ docker compose -f website/compose.docker.yml up --build
 
+name: repomix-local-webui
+
 services:
   client:
     build:
