@@ -33,7 +33,6 @@ export function usePackRequest() {
 
   // Request controller for cancellation
   let requestController: AbortController | null = null;
-  const TIMEOUT_MS = 30_000;
 
   // Computed validation
   const isSubmitValid = computed(() => {
@@ -82,10 +81,6 @@ export function usePackRequest() {
     progressMessage.value = null;
     inputRepositoryUrl.value = mode.value === 'localPath' ? inputLocalPath.value : inputUrl.value;
 
-    // Set up automatic timeout
-    // Use .bind() to avoid capturing the surrounding scope in the closure
-    const timeoutId = setTimeout(requestController.abort.bind(requestController, 'timeout'), TIMEOUT_MS);
-
     try {
       await handlePackRequest(
         mode.value === 'url' ? inputUrl.value : '',
@@ -118,7 +113,6 @@ export function usePackRequest() {
         },
       );
     } finally {
-      clearTimeout(timeoutId);
       loading.value = false;
       requestController = null;
     }

@@ -2,7 +2,6 @@ import module from 'node:module';
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
 import { compress } from 'hono/compress';
-import { timeout } from 'hono/timeout';
 import { localPathBrowseAction } from './actions/localPathBrowseAction.js';
 import { packAction } from './actions/packAction.js';
 import { bodyLimitMiddleware } from './middlewares/bodyLimit.js';
@@ -21,8 +20,6 @@ const isWarmupMode = (): boolean => {
 
 // Skip server initialization in warmup mode
 if (!isWarmupMode()) {
-  const API_TIMEOUT_MS = 35_000;
-
   // Log server metrics on startup
   logInfo('Server starting', {
     metrics: {
@@ -46,9 +43,6 @@ if (!isWarmupMode()) {
 
   // Enable compression
   app.use(compress());
-
-  // Set timeout for API routes
-  app.use('/api', timeout(API_TIMEOUT_MS));
 
   // Setup custom logger
   app.use('*', cloudLoggerMiddleware());
