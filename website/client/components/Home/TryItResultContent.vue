@@ -6,7 +6,7 @@ import { AlertTriangle, BarChart2, Copy, Download, GitFork, PackageSearch, Share
 import { useData } from 'vitepress';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { VAceEditor } from 'vue3-ace-editor';
-import type { PackOptions } from '../../composables/usePackOptions';
+import type { PackOptions } from '../../composables/packOptionsShared.js';
 import type { PackResult } from '../api/client';
 import { generateCliCommand } from '../utils/cliCommand';
 import {

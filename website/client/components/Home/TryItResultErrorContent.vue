@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { AlertCircle, AlertTriangle, Copy } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
-import type { PackOptions } from '../../composables/usePackOptions';
+import type { PackOptions } from '../../composables/packOptionsShared.js';
 import { generateCliCommand } from '../utils/cliCommand';
 import { useHomeUiText } from './useHomeUiText';
 

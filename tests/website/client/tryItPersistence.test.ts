@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_PACK_OPTIONS } from '../../../website/client/composables/usePackOptions.js';
+import { DEFAULT_PACK_OPTIONS } from '../../../website/client/composables/packOptionsShared.js';
 import {
   clearLocalPathBrowserState,
   createDefaultLocalPathBrowserState,

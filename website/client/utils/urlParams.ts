@@ -1,4 +1,4 @@
-import type { PackOptions } from '../composables/usePackOptions';
+import type { PackOptions } from '../composables/packOptionsShared.js';
 
 // URL parameter constants
 const BOOLEAN_PARAMS = [

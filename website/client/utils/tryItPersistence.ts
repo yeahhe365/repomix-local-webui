@@ -1,4 +1,4 @@
-import type { PackOptions } from '../composables/usePackOptions';
+import type { PackOptions } from '../composables/packOptionsShared.js';
 
 export interface StorageLike {
   getItem(key: string): string | null;

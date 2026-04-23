@@ -1,8 +1,14 @@
-import { describe, expect, it } from 'vitest';
-import { createSiteLocales, createSiteRewrites } from '../../website/client/.vitepress/config/siteLocaleConfig.js';
+import { describe, expect, it, vi } from 'vitest';
+
+vi.mock('vitepress', () => ({
+  defineConfig: (config: unknown) => config,
+}));
 
 describe('siteLocaleConfig', () => {
-  it('uses Simplified Chinese as the root locale and keeps English under /en/', () => {
+  it('uses Simplified Chinese as the root locale and keeps English under /en/', async () => {
+    const { createSiteLocales, createSiteRewrites } = await import(
+      '../../website/client/.vitepress/config/siteLocaleConfig.js'
+    );
     const locales = createSiteLocales();
     const rewrites = createSiteRewrites();
 

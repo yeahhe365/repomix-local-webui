@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import type { PackOptions } from '../../composables/usePackOptions';
+import type { PackOptions } from '../../composables/packOptionsShared.js';
 import type { TabType } from '../../types/ui';
 import type { FileInfo, PackProgressStage, PackResult } from '../api/client';
 import SupportMessage from './SupportMessage.vue';

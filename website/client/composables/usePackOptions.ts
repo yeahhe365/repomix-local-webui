@@ -1,30 +1,5 @@
 import { computed, reactive } from 'vue';
-
-export interface PackOptions {
-  format: 'xml' | 'markdown' | 'plain';
-  removeComments: boolean;
-  removeEmptyLines: boolean;
-  showLineNumbers: boolean;
-  fileSummary: boolean;
-  directoryStructure: boolean;
-  includePatterns: string;
-  ignorePatterns: string;
-  outputParsable: boolean;
-  compress: boolean;
-}
-
-export const DEFAULT_PACK_OPTIONS: PackOptions = {
-  format: 'xml',
-  removeComments: false,
-  removeEmptyLines: false,
-  showLineNumbers: false,
-  fileSummary: true,
-  directoryStructure: true,
-  includePatterns: '',
-  ignorePatterns: '',
-  outputParsable: false,
-  compress: false,
-};
+import { DEFAULT_PACK_OPTIONS, type PackOptions } from './packOptionsShared.js';
 
 export function usePackOptions() {
   // Initialize with default options only

@@ -3,6 +3,18 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 const mockHandlePackRequest = vi.fn();
 const mockSaveTryItPageState = vi.fn();
 
+vi.mock('vue', () => ({
+  computed: (getter: () => unknown) => ({
+    get value() {
+      return getter();
+    },
+  }),
+  onMounted: (callback: () => void) => callback(),
+  reactive: <T extends object>(value: T) => value,
+  ref: <T>(value: T) => ({ value }),
+  watch: () => {},
+}));
+
 vi.mock('../../../website/client/components/utils/requestHandlers', () => ({
   handlePackRequest: mockHandlePackRequest,
 }));
