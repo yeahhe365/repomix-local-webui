@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776964747654,
+  "lastUpdate": 1776965293239,
   "repoUrl": "https://github.com/yeahhe365/repomix-local-webui",
   "entries": {
     "Repomix Performance": [
@@ -538,6 +538,51 @@ window.BENCHMARK_DATA = {
             "range": "±32",
             "unit": "ms",
             "extra": "Median of 20 runs\nQ1: 2506ms, Q3: 2538ms\nAll times: 2460, 2475, 2488, 2496, 2501, 2506, 2507, 2508, 2512, 2516, 2525, 2527, 2527, 2531, 2533, 2538, 2538, 2549, 2569, 2604ms"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "64304674+yeahhe365@users.noreply.github.com",
+            "name": "从何开始123",
+            "username": "yeahhe365"
+          },
+          "committer": {
+            "email": "64304674+yeahhe365@users.noreply.github.com",
+            "name": "从何开始123",
+            "username": "yeahhe365"
+          },
+          "distinct": true,
+          "id": "5cc23c5f37dac28157820eaed8609f8015729260",
+          "message": "fix(ci): stabilize windows compose test and skip tokenless codecov",
+          "timestamp": "2026-04-24T01:25:01+08:00",
+          "tree_id": "a1327da791aa5b6219a8d7be4ce6bd2ac4388bcd",
+          "url": "https://github.com/yeahhe365/repomix-local-webui/commit/5cc23c5f37dac28157820eaed8609f8015729260"
+        },
+        "date": 1776965292854,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Repomix Pack (macOS)",
+            "value": 1160,
+            "range": "±94",
+            "unit": "ms",
+            "extra": "Median of 30 runs\nQ1: 1146ms, Q3: 1240ms\nAll times: 1115, 1124, 1132, 1140, 1143, 1143, 1145, 1146, 1148, 1149, 1151, 1153, 1155, 1156, 1159, 1160, 1161, 1174, 1177, 1180, 1193, 1204, 1240, 1242, 1245, 1249, 1259, 1283, 1493, 1599ms"
+          },
+          {
+            "name": "Repomix Pack (Linux)",
+            "value": 1847,
+            "range": "±38",
+            "unit": "ms",
+            "extra": "Median of 20 runs\nQ1: 1830ms, Q3: 1868ms\nAll times: 1811, 1812, 1817, 1817, 1822, 1830, 1836, 1837, 1841, 1842, 1847, 1851, 1852, 1855, 1859, 1868, 1873, 2089, 2112, 2245ms"
+          },
+          {
+            "name": "Repomix Pack (Windows)",
+            "value": 2417,
+            "range": "±309",
+            "unit": "ms",
+            "extra": "Median of 20 runs\nQ1: 2406ms, Q3: 2715ms\nAll times: 2370, 2375, 2377, 2397, 2398, 2406, 2407, 2411, 2412, 2415, 2417, 2421, 2434, 2443, 2476, 2715, 2948, 2974, 2978, 3033ms"
           }
         ]
       }
