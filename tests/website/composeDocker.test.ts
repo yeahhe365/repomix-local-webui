@@ -21,9 +21,15 @@ describe('compose.docker.yml', () => {
   });
 
   it('detects the restart policy even when the compose file uses CRLF newlines', () => {
-    const compose = readFileSync(composePath, 'utf8').replaceAll('\n', '\r\n');
+    const compose = readFileSync(composePath, 'utf8').replaceAll('\r\n', '\n').replaceAll('\n', '\r\n');
 
     expect(compose).toMatch(serverRestartPattern);
+  });
+
+  it('documents why naive newline replacement breaks on Windows', () => {
+    const compose = readFileSync(composePath, 'utf8').replaceAll('\r\n', '\n');
+
+    expect(compose.replaceAll('\n', '\r\n')).toMatch(serverRestartPattern);
   });
 
   it('binds local deployment ports to localhost only', () => {
