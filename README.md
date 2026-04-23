@@ -111,6 +111,7 @@
 
 - 在浏览器中体验 Repomix：[repomix.com](https://repomix.com/)
 - 加入 [Discord 社区](https://discord.gg/wNYzTwZFku) 获取帮助与交流
+- 访问友链 [LINUXDO 论坛](https://linux.do/) 参与更多技术讨论
 
 **期待在那里见到你。**
 
