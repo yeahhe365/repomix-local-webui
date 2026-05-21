@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isValidAbsolutePath } from '../../website/client/components/Home/localPathInput.js';
+import { isValidAbsolutePath } from '../../website/client/local-webui/utils/tryIt/localPathInput.js';
 
 describe('localPathInput', () => {
   it('accepts unix-style absolute paths', () => {

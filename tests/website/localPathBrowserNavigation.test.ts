@@ -4,7 +4,7 @@ import {
   filterLocalPathEntries,
   moveLocalPathSelection,
   pushRecentLocalPath,
-} from '../../website/client/components/Home/localPathBrowserNavigation.js';
+} from '../../website/client/local-webui/utils/tryIt/localPathBrowserNavigation.js';
 
 describe('localPathBrowserNavigation', () => {
   it('builds clickable breadcrumbs for the current absolute path', () => {

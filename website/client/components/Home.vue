@@ -1,6 +1,6 @@
 <script setup>
 import Hero from './Home/Hero.vue';
-import TryIt from './Home/TryIt.vue';
+import TryIt from '../local-webui/components/Home/TryIt.vue';
 </script>
 
 <template>

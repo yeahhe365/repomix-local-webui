@@ -1,0 +1,109 @@
+import { packRepository } from '../../api/client';
+import type { PackProgressStage, PackRequest, PackResult } from '../../types/api';
+import type { PackFormat, PackRequestOptions } from '../../types/pack';
+import { type AnalyticsActionType, analyticsUtils } from './analytics';
+
+interface RequestHandlerOptions {
+  onSuccess?: (result: PackResult) => void;
+  onError?: (error: string) => void;
+  onAbort?: (message: string) => void;
+  onProgress?: (stage: PackProgressStage, message?: string) => void;
+  signal?: AbortSignal;
+  file?: File;
+  localPath?: string;
+  messages?: {
+    requestTimedOut?: string;
+    requestCancelled?: string;
+    requestCancelledUnknown?: string;
+    unexpectedError?: string;
+  };
+}
+
+/**
+ * Handle repository packing request
+ */
+export async function handlePackRequest(
+  url: string,
+  format: PackFormat,
+  options: PackRequestOptions,
+  handlerOptions: RequestHandlerOptions = {},
+): Promise<void> {
+  const { onSuccess, onError, onAbort, onProgress, signal, file, localPath, messages } = handlerOptions;
+  const processedUrl = url.trim();
+  const processedLocalPath = localPath?.trim();
+  const analyticsSource = processedLocalPath || processedUrl;
+
+  // Track pack start
+  analyticsUtils.trackPackStart(analyticsSource);
+
+  try {
+    const request: PackRequest = {
+      url: processedUrl || undefined,
+      localPath: localPath?.trim() || undefined,
+      format,
+      options,
+      file,
+    };
+
+    const response = await packRepository(request, {
+      onProgress,
+      signal,
+    });
+
+    // Track successful pack
+    if (response.metadata.summary) {
+      analyticsUtils.trackPackSuccess(
+        analyticsSource,
+        response.metadata.summary.totalFiles,
+        response.metadata.summary.totalCharacters,
+      );
+    }
+
+    onSuccess?.(response);
+  } catch (err) {
+    // Check for abort/timeout first, regardless of error type
+    if (signal?.aborted) {
+      const isTimeout = signal?.reason === 'timeout';
+      if (isTimeout) {
+        onAbort?.(
+          messages?.requestTimedOut ??
+            'Request timed out.\nPlease consider using Include Patterns or Ignore Patterns to reduce the scope.',
+        );
+        return;
+      }
+
+      const isCancelled = signal?.reason === 'cancel';
+      if (isCancelled) {
+        onAbort?.(messages?.requestCancelled ?? 'Request was cancelled.');
+        return;
+      }
+
+      onAbort?.(messages?.requestCancelledUnknown ?? 'Request was cancelled with an unknown reason.');
+      return;
+    }
+
+    let errorMessage: string;
+
+    if (err instanceof Error) {
+      errorMessage = err.message;
+    } else {
+      errorMessage = messages?.unexpectedError ?? 'An unexpected error occurred';
+    }
+
+    analyticsUtils.trackPackError(analyticsSource, errorMessage);
+
+    console.error('Error processing repository:', err);
+    onError?.(errorMessage);
+  }
+}
+
+/**
+ * Handle form input changes with analytics tracking
+ */
+export function handleOptionChange(value: boolean | string, analyticsAction: AnalyticsActionType): void {
+  if (typeof value === 'boolean') {
+    analyticsUtils.trackOptionToggle(analyticsAction, value);
+  } else {
+    analyticsUtils.trackOptionToggle(analyticsAction, Boolean(value));
+  }
+}

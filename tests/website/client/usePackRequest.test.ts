@@ -15,11 +15,11 @@ vi.mock('vue', () => ({
   watch: () => {},
 }));
 
-vi.mock('../../../website/client/components/utils/requestHandlers', () => ({
+vi.mock('../../../website/client/local-webui/utils/tryIt/requestHandlers', () => ({
   handlePackRequest: mockHandlePackRequest,
 }));
 
-vi.mock('../../../website/client/components/Home/useHomeUiText', () => {
+vi.mock('../../../website/client/local-webui/components/Home/useHomeUiText', () => {
   return {
     useHomeUiText: () => ({
       value: {
@@ -34,19 +34,19 @@ vi.mock('../../../website/client/components/Home/useHomeUiText', () => {
   };
 });
 
-vi.mock('../../../website/client/components/utils/validation', () => ({
+vi.mock('../../../website/client/local-webui/utils/tryIt/remoteValidation', () => ({
   isValidRemoteValue: (value: string) => value.trim().length > 0,
 }));
 
-vi.mock('../../../website/client/components/Home/localPathInput', () => ({
+vi.mock('../../../website/client/local-webui/utils/tryIt/localPathInput', () => ({
   isValidAbsolutePath: (value: string) => value.startsWith('/'),
 }));
 
-vi.mock('../../../website/client/utils/urlParams', () => ({
+vi.mock('../../../website/client/local-webui/utils/urlParams', () => ({
   parseUrlParameters: () => ({}),
 }));
 
-vi.mock('../../../website/client/utils/tryItPersistence', () => ({
+vi.mock('../../../website/client/local-webui/utils/tryItPersistence', () => ({
   loadTryItPageState: () => null,
   resolveInitialTryItPageState: ({ defaultOptions }: { defaultOptions: Record<string, unknown> }) => ({
     mode: 'url',
@@ -70,7 +70,7 @@ describe('usePackRequest', () => {
 
   it('does not schedule an automatic timeout when submitting a pack request', async () => {
     const setTimeoutSpy = vi.spyOn(globalThis, 'setTimeout');
-    const { usePackRequest } = await import('../../../website/client/composables/usePackRequest.js');
+    const { usePackRequest } = await import('../../../website/client/local-webui/composables/usePackRequest.js');
 
     const request = usePackRequest();
     request.inputUrl.value = 'yamadashy/repomix';

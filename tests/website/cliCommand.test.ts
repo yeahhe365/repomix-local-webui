@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { type CliCommandPackOptions, generateCliCommand } from '../../website/client/components/utils/cliCommand.js';
+import { type CliCommandPackOptions, generateCliCommand } from '../../website/client/local-webui/utils/tryIt/cliCommand.js';
 
 const createOptions = (overrides: Partial<CliCommandPackOptions> = {}): CliCommandPackOptions => ({
   format: 'xml',

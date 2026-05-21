@@ -25,7 +25,9 @@
     "components/**/*.vue",
     "composables/**/*.ts",
     "utils/**/*.ts",
-    "constants/**/*.ts"
+    "constants/**/*.ts",
+    "local-webui/**/*.ts",
+    "local-webui/**/*.vue"
   ],
   "exclude": ["node_modules", "dist"]
 }

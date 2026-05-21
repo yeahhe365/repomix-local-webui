@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_PACK_OPTIONS } from '../../../website/client/composables/packOptionsShared.js';
+import { DEFAULT_PACK_OPTIONS } from '../../../website/client/local-webui/types/pack.js';
 import {
   clearLocalPathBrowserState,
   createDefaultLocalPathBrowserState,
@@ -9,7 +9,7 @@ import {
   type StorageLike,
   saveLocalPathBrowserState,
   saveTryItPageState,
-} from '../../../website/client/utils/tryItPersistence.js';
+} from '../../../website/client/local-webui/utils/tryItPersistence.js';
 
 function createMemoryStorage(): StorageLike {
   const store = new Map<string, string>();
