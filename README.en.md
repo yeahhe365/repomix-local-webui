@@ -66,6 +66,12 @@ This fork is oriented toward Chinese documentation, local Web UI use, and Docker
 
 Issues and pull requests are welcome. Keep changes focused and verify build, lint, and tests before submitting.
 
+---
+
+## Related Community
+
+- [Linux.do](https://linux.do/): an active Chinese tech community focused on AI, software development, resource sharing, and frontier technology discussions. Its vision is "a new ideal community", and its community culture emphasizes sincerity, friendliness, unity, and professionalism.
+
 ## License
 
 License information is available in the repository `LICENSE` file.
