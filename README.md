@@ -1,3 +1,7 @@
+<p align="center">
+  <a href="./README.md">中文</a> | <a href="./README.en.md">English</a>
+</p>
+
 <div align="center" markdown="1">
    <h1>repomix-local-webui</h1>
    <p><strong>一个面向 Docker 部署与简体中文工作流的本地优先 Repomix Web UI 分支。</strong></p>
