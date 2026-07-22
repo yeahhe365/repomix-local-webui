@@ -139,7 +139,7 @@ To build the website and point the generated frontend at a local API server:
 
 ```bash
 cd website/client
-VITE_REPOMIX_API_BASE_URL=http://localhost:8080 npm run docs:build
+VITE_REPOMIX_API_BASE_URL=http://localhost:8787 npm run docs:build
 npm run docs:preview -- --port 5173
 
 # Access the preview at http://localhost:5173/
@@ -155,7 +155,7 @@ cd ../..
 docker compose -f website/compose.docker.yml up --build
 
 # Frontend: http://localhost:5173/
-# Backend health check: http://localhost:8080/health
+# Backend health check: http://localhost:8787/health
 ```
 
 When updating documentation, you only need to update the English version first. The maintainers will handle translations to other languages.

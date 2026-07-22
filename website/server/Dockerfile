@@ -46,7 +46,7 @@ COPY --from=builder /app/warmup.mjs ./warmup.mjs
 # Set environment variables for bundled mode
 # NODE_COMPILE_CACHE enables V8 compile cache to reduce cold start latency
 ENV NODE_ENV=production \
-    PORT=8080 \
+    PORT=8787 \
     NODE_OPTIONS=--max-old-space-size=1024 \
     REPOMIX_WORKER_PATH=/app/dist-bundled/worker.mjs \
     REPOMIX_WASM_DIR=/app/dist-bundled/wasm \
@@ -57,7 +57,7 @@ ENV NODE_ENV=production \
 RUN node warmup.mjs
 
 # Expose port
-EXPOSE 8080
+EXPOSE 8787
 
 # Start the bundled server
 CMD ["node", "dist-bundled/server.mjs"]

@@ -155,6 +155,21 @@ export interface HomeUiText {
     starLinkText: string;
     starSuffix: string;
   };
+  presets: {
+    title: string;
+    sectionAria: string;
+    save: string;
+    saveAria: string;
+    confirmSave: string;
+    cancelSaveAria: string;
+    namePlaceholder: string;
+    nameAria: string;
+    emptyHint: string;
+    ignoreLabel: string;
+    includeLabel: string;
+    applyAria: (name: string) => string;
+    deleteAria: (name: string) => string;
+  };
 }
 
 const enText: HomeUiText = {
@@ -325,6 +340,21 @@ const enText: HomeUiText = {
     starLinkText: 'Star this project',
     starSuffix: ' if you find it useful!',
   },
+  presets: {
+    title: 'Saved paths',
+    sectionAria: 'Saved folder path presets',
+    save: 'Save current',
+    saveAria: 'Save current local path and patterns as a preset',
+    confirmSave: 'Save',
+    cancelSaveAria: 'Cancel saving preset',
+    namePlaceholder: 'Preset name',
+    nameAria: 'Preset name',
+    emptyHint: 'Save this folder path and ignore patterns for one-click reuse.',
+    ignoreLabel: 'Ignore',
+    includeLabel: 'Include',
+    applyAria: (name) => `Apply preset ${name}`,
+    deleteAria: (name) => `Delete preset ${name}`,
+  },
 };
 
 const zhText: HomeUiText = {
@@ -491,6 +521,21 @@ const zhText: HomeUiText = {
   support: {
     starLinkText: '给项目点个 Star',
     starSuffix: '，如果你觉得它有帮助！',
+  },
+  presets: {
+    title: '已保存路径',
+    sectionAria: '已保存的文件夹路径预设',
+    save: '保存当前',
+    saveAria: '将当前本地路径与模式保存为预设',
+    confirmSave: '保存',
+    cancelSaveAria: '取消保存预设',
+    namePlaceholder: '预设名称',
+    nameAria: '预设名称',
+    emptyHint: '保存此文件夹路径与忽略模式，之后可一键选用。',
+    ignoreLabel: '忽略',
+    includeLabel: '包含',
+    applyAria: (name) => `应用预设 ${name}`,
+    deleteAria: (name) => `删除预设 ${name}`,
   },
 };
 

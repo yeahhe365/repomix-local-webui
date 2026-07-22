@@ -32,20 +32,21 @@ docker compose -f website/compose.docker.yml up --build
 启动后可访问：
 
 - 前端：`http://localhost:5173`
-- 后端健康检查：`http://localhost:8080/health`
+- 后端健康检查：`http://localhost:8787/health`
 
 ## 当前 Docker 配置
 
 本地部署配置默认启用了以下能力：
 
 - `ENABLE_LOCAL_PATH_MODE=true`
-- `LOCAL_PATH_ALLOWLIST=/Users`
-- 端口绑定：`127.0.0.1:5173:80`、`127.0.0.1:8080:8080`
-- 宿主机目录挂载：`/Users:/Users:ro`
+- `LOCAL_PATH_ALLOWLIST=/Users,/Volumes/WD_BLACK`
+- 端口绑定：`127.0.0.1:5173:80`、`127.0.0.1:8787:8787`
+- 宿主机目录挂载：`/Users:/Users:ro`、`/Volumes/WD_BLACK:/Volumes/WD_BLACK:ro`
+- 本地部署已移除 API 请求频率限制（rate limit），可反复打包
 
 这意味着：
 
-- Web UI 可以浏览 `/Users` 下面的目录
+- Web UI 可以浏览 `/Users` 和 `/Volumes/WD_BLACK` 下面的目录
 - 后端只能读取允许目录中的内容
 - 前后端默认只允许本机访问
 - 读取方式是只读挂载，不会修改宿主机文件
@@ -77,10 +78,16 @@ docker compose -f website/compose.docker.yml up --build
 
 ## 常见问题
 
-### 1. 目录浏览时提示 rate limit exceeded
+### 1. 提示 Local path does not exist
 
-这个问题在当前 fork 中已经修复。
-如果你还看到旧报错，请重新拉取最新代码并执行：
+常见原因是路径在容器内不可见：`LOCAL_PATH_ALLOWLIST` 与 `volumes` 挂载没有覆盖该路径。
+
+例如要打包 `/Volumes/WD_BLACK/Code/项目名`，必须同时：
+
+1. 把该路径前缀加入 `LOCAL_PATH_ALLOWLIST`
+2. 在 `volumes` 中以只读方式挂载对应宿主机目录
+
+修改后重新构建：
 
 ```bash
 docker compose -f website/compose.docker.yml up --build -d
@@ -98,14 +105,15 @@ docker compose -f website/compose.docker.yml up --build -d
 
 ## 自定义允许目录
 
-如果你不想只允许 `/Users`，可以修改 `website/compose.docker.yml`：
+如果你需要额外目录，可以修改 `website/compose.docker.yml`：
 
 ```yaml
 environment:
   - ENABLE_LOCAL_PATH_MODE=true
-  - LOCAL_PATH_ALLOWLIST=/Users,/Volumes/Work
+  - LOCAL_PATH_ALLOWLIST=/Users,/Volumes/WD_BLACK,/Volumes/Work
 volumes:
   - /Users:/Users:ro
+  - /Volumes/WD_BLACK:/Volumes/WD_BLACK:ro
   - /Volumes/Work:/Volumes/Work:ro
 ```
 

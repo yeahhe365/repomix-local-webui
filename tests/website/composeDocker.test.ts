@@ -36,8 +36,16 @@ describe('compose.docker.yml', () => {
     const compose = readFileSync(composePath, 'utf8');
 
     expect(compose).toContain('"127.0.0.1:5173:80"');
-    expect(compose).toContain('"127.0.0.1:8080:8080"');
+    expect(compose).toContain('"127.0.0.1:8787:8787"');
     expect(compose).not.toContain('"5173:80"');
-    expect(compose).not.toContain('"8080:8080"');
+    expect(compose).not.toContain('"8787:8787"');
+  });
+
+  it('mounts local code roots needed for path-mode packaging', () => {
+    const compose = readFileSync(composePath, 'utf8');
+
+    expect(compose).toContain('LOCAL_PATH_ALLOWLIST=/Users,/Volumes/WD_BLACK');
+    expect(compose).toContain('/Users:/Users:ro');
+    expect(compose).toContain('/Volumes/WD_BLACK:/Volumes/WD_BLACK:ro');
   });
 });

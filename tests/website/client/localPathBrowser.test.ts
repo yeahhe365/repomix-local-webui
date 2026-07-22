@@ -32,7 +32,7 @@ describe('browseLocalPathDirectories', () => {
 
     const result = await browseLocalPathDirectories('/Users');
 
-    expect(fetchMock).toHaveBeenCalledWith('http://localhost:8080/api/local-path/directories?path=%2FUsers');
+    expect(fetchMock).toHaveBeenCalledWith('http://localhost:8787/api/local-path/directories?path=%2FUsers');
     expect(result.entries[0]?.path).toBe('/Users/jones');
   });
 

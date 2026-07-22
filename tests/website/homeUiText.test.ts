@@ -32,3 +32,17 @@ describe('homeUiText', () => {
     expect(text.upload.localPathBrowserRecentTitle).toBe('Recent');
   });
 });
+
+describe('local-webui homeUiText presets', () => {
+  it('exposes Chinese and English preset labels', async () => {
+    const { getHomeUiText: getLocalHomeUiText } = await import(
+      '../../website/client/local-webui/components/Home/homeUiText.js'
+    );
+
+    expect(getLocalHomeUiText('zh-CN').presets.title).toBe('已保存路径');
+    expect(getLocalHomeUiText('zh-CN').presets.save).toBe('保存当前');
+    expect(getLocalHomeUiText('en-US').presets.title).toBe('Saved paths');
+    expect(getLocalHomeUiText('en-US').presets.save).toBe('Save current');
+  });
+});
+

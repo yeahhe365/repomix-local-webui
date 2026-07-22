@@ -9,7 +9,6 @@ import { botGuardMiddleware } from './middlewares/botGuard.js';
 import { cloudflareGuardMiddleware } from './middlewares/cloudflareGuard.js';
 import { cloudLoggerMiddleware } from './middlewares/cloudLogger.js';
 import { corsMiddleware } from './middlewares/cors.js';
-import { rateLimitMiddleware } from './middlewares/rateLimit.js';
 import { logInfo, logMemoryUsage } from './utils/logger.js';
 import { getProcessConcurrency } from './utils/processConcurrency.js';
 
@@ -49,9 +48,6 @@ if (!isWarmupMode()) {
 
   // Block bot/crawler requests from triggering pack operations
   app.use('/api/*', botGuardMiddleware());
-
-  // Apply rate limiting to API routes
-  app.use('/api/*', rateLimitMiddleware());
 
   // Health check endpoint
   app.get('/health', (c) => c.text('OK'));

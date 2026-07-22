@@ -39,5 +39,5 @@ export function resolveApiBaseUrl(
     return override;
   }
 
-  return env.PROD ? 'https://api.repomix.com' : 'http://localhost:8080';
+  return env.PROD ? 'https://api.repomix.com' : 'http://localhost:8787';
 }

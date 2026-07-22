@@ -11,13 +11,13 @@ describe('resolveApiBaseUrl', () => {
     expect(
       resolveApiBaseUrl({
         PROD: true,
-        VITE_REPOMIX_API_BASE_URL: 'http://localhost:8080',
+        VITE_REPOMIX_API_BASE_URL: 'http://localhost:8787',
       }),
-    ).toBe('http://localhost:8080');
+    ).toBe('http://localhost:8787');
   });
 
   it('uses the local API in development when no override is set', () => {
-    expect(resolveApiBaseUrl({ PROD: false })).toBe('http://localhost:8080');
+    expect(resolveApiBaseUrl({ PROD: false })).toBe('http://localhost:8787');
   });
 
   it('uses the hosted API in production when no override is set', () => {

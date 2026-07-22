@@ -9,6 +9,7 @@ services:
       context: ./client
       dockerfile: Dockerfile
       target: prebuilt
+    restart: unless-stopped
     ports:
       - "127.0.0.1:5173:80"
     depends_on:
@@ -20,9 +21,10 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:
-      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:8787:8787"
     environment:
       - ENABLE_LOCAL_PATH_MODE=true
-      - LOCAL_PATH_ALLOWLIST=/Users
+      - LOCAL_PATH_ALLOWLIST=/Users,/Volumes/WD_BLACK
     volumes:
       - /Users:/Users:ro
+      - /Volumes/WD_BLACK:/Volumes/WD_BLACK:ro

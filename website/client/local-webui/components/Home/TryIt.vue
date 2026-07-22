@@ -15,6 +15,15 @@
         @cancel="handleCancel"
       />
 
+      <TryItPresets
+        :mode="mode"
+        :local-path="inputLocalPath"
+        :include-patterns="packOptions.includePatterns"
+        :ignore-patterns="packOptions.ignorePatterns"
+        :loading="loading"
+        @apply="handleApplyPreset"
+      />
+
       <TryItPackOptions
         v-model:format="packOptions.format"
         v-model:include-patterns="packOptions.includePatterns"
@@ -53,8 +62,10 @@ import { clearLocalPathBrowserState, clearTryItPageState } from '../../utils/try
 import { isValidRemoteValue } from '../../utils/tryIt/remoteValidation';
 import { hasNonDefaultValues, parseUrlParameters, updateUrlParameters } from '../../utils/urlParams';
 import type { FileInfo } from '../../types/api';
+import type { TryItPreset } from '../../utils/tryItPresets';
 import TryItInputRow from './TryItInputRow.vue';
 import TryItPackOptions from './TryItPackOptions.vue';
+import TryItPresets from './TryItPresets.vue';
 import TryItResult from './TryItResult.vue';
 
 // Use composables for state management
@@ -184,6 +195,14 @@ function handleRepack(selectedFiles: FileInfo[]) {
 
 function handleCancel() {
   cancelRequest();
+}
+
+function handleApplyPreset(preset: TryItPreset) {
+  mode.value = 'localPath';
+  inputLocalPath.value = preset.localPath;
+  packOptions.includePatterns = preset.includePatterns;
+  packOptions.ignorePatterns = preset.ignorePatterns;
+  uploadedFile.value = null;
 }
 
 // Watch for changes in packOptions and inputUrl to update URL in real-time

@@ -194,7 +194,7 @@ docker compose -f website/compose.docker.yml up --build
 启动后默认可访问：
 
 - 前端：`http://localhost:5173`
-- 后端健康检查：`http://localhost:8080/health`
+- 后端健康检查：`http://localhost:8787/health`
 
 默认本地部署配置会启用：
 

@@ -34,10 +34,10 @@ sudo /usr/local/bin/init-firewall.sh
 
 start_service \
   "website server" \
-  8080 \
+  8787 \
   "$ROOT_DIR/website/server" \
   "$LOG_DIR/website-server.log" \
-  env ENABLE_LOCAL_PATH_MODE=true LOCAL_PATH_ALLOWLIST=/workspace PORT=8080 npm run dev
+  env ENABLE_LOCAL_PATH_MODE=true LOCAL_PATH_ALLOWLIST=/workspace PORT=8787 npm run dev
 
 start_service \
   "website client" \
