@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1779702397668,
+  "lastUpdate": 1784979618637,
   "repoUrl": "https://github.com/yeahhe365/repomix-local-webui",
   "entries": {
     "Repomix Performance": [
@@ -718,6 +718,51 @@ window.BENCHMARK_DATA = {
             "range": "±45",
             "unit": "ms",
             "extra": "Median of 20 runs\nQ1: 2464ms, Q3: 2509ms\nAll times: 2420, 2438, 2440, 2443, 2458, 2464, 2465, 2466, 2466, 2479, 2484, 2491, 2493, 2494, 2507, 2509, 2530, 2553, 2569, 2599ms"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "64304674+yeahhe365@users.noreply.github.com",
+            "name": "从何开始123",
+            "username": "yeahhe365"
+          },
+          "committer": {
+            "email": "64304674+yeahhe365@users.noreply.github.com",
+            "name": "从何开始123",
+            "username": "yeahhe365"
+          },
+          "distinct": true,
+          "id": "99f3f0605e433acd6f2c28efdd857b2b1916640c",
+          "message": "fix(docker): avoid Clash Fake-IP 502 for local webui proxy\n\nRename compose service server to repomix-api and resolve the API\nupstream at request time via Docker DNS so nginx cannot cache a\npolluted Fake-IP (198.18.0.0/16) and return 502 on /api/pack.",
+          "timestamp": "2026-07-25T19:38:05+08:00",
+          "tree_id": "8093110e705bcc94f03b7b892df6b1ab378a9d84",
+          "url": "https://github.com/yeahhe365/repomix-local-webui/commit/99f3f0605e433acd6f2c28efdd857b2b1916640c"
+        },
+        "date": 1784979618069,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Repomix Pack (macOS)",
+            "value": 1319,
+            "range": "±47",
+            "unit": "ms",
+            "extra": "Median of 30 runs\nQ1: 1304ms, Q3: 1351ms\nAll times: 1279, 1289, 1290, 1293, 1297, 1300, 1301, 1304, 1306, 1308, 1310, 1310, 1312, 1317, 1317, 1319, 1321, 1325, 1325, 1335, 1338, 1348, 1351, 1360, 1464, 1480, 1521, 1532, 1540, 1607ms"
+          },
+          {
+            "name": "Repomix Pack (Linux)",
+            "value": 2101,
+            "range": "±61",
+            "unit": "ms",
+            "extra": "Median of 20 runs\nQ1: 2075ms, Q3: 2136ms\nAll times: 2037, 2054, 2057, 2065, 2067, 2075, 2086, 2086, 2089, 2091, 2101, 2108, 2109, 2125, 2126, 2136, 2142, 2146, 2159, 2175ms"
+          },
+          {
+            "name": "Repomix Pack (Windows)",
+            "value": 2544,
+            "range": "±28",
+            "unit": "ms",
+            "extra": "Median of 20 runs\nQ1: 2531ms, Q3: 2559ms\nAll times: 2496, 2503, 2509, 2517, 2517, 2531, 2532, 2536, 2541, 2542, 2544, 2547, 2550, 2551, 2557, 2559, 2562, 2562, 2570, 2585ms"
           }
         ]
       }
