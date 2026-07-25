@@ -1,5 +1,8 @@
 # Run the packaged website and API using production-style Docker images
 # $ docker compose -f website/compose.docker.yml up --build
+#
+# Service is named repomix-api (not "server") so host Clash Fake-IP DNS
+# cannot hijack the short name into 198.18.0.0/16.
 
 name: repomix-local-webui
 
@@ -13,9 +16,9 @@ services:
     ports:
       - "127.0.0.1:5173:80"
     depends_on:
-      - server
+      - repomix-api
 
-  server:
+  repomix-api:
     build:
       context: ./server
       dockerfile: Dockerfile
