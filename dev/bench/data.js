@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1784979618637,
+  "lastUpdate": 1785326313708,
   "repoUrl": "https://github.com/yeahhe365/repomix-local-webui",
   "entries": {
     "Repomix Performance": [
@@ -763,6 +763,51 @@ window.BENCHMARK_DATA = {
             "range": "±28",
             "unit": "ms",
             "extra": "Median of 20 runs\nQ1: 2531ms, Q3: 2559ms\nAll times: 2496, 2503, 2509, 2517, 2517, 2531, 2532, 2536, 2541, 2542, 2544, 2547, 2550, 2551, 2557, 2559, 2562, 2562, 2570, 2585ms"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "64304674+yeahhe365@users.noreply.github.com",
+            "name": "从何开始123",
+            "username": "yeahhe365"
+          },
+          "committer": {
+            "email": "64304674+yeahhe365@users.noreply.github.com",
+            "name": "从何开始123",
+            "username": "yeahhe365"
+          },
+          "distinct": true,
+          "id": "98ab30ae4e43b2bbf8c6542b26a5b109827a8ba9",
+          "message": "feat(local-webui): redesign in minimal Linear/Vercel style\n\nSelf-contained packer UI rewrite under website/client/local-webui/:\n- Design-token layer (--amc-* mapping to --vp-c-*): 8/12/16/20 spacing,\n  6px control / 8px card radius, 40px control height, brand accent only\n- Hero, TryIt input row (segmented control), pack options, result, output\n  actions, presets, recent packs, toast all migrated to tokens\n- Behavior changes: default input mode url -> localPath,\n  default download format xml -> plain\n- Home component migrated to local-webui/ namespace; Pack & Download button\n- Presets + recent packs features; bot guard removed for local webui\n\nProps/emits contracts unchanged; 10/10 features preserved; no new deps.\n\nCo-Authored-By: Claude Fable 5 <noreply@anthropic.com>",
+          "timestamp": "2026-07-29T19:55:22+08:00",
+          "tree_id": "4e1854633020ed40841318ff776ea02349be2012",
+          "url": "https://github.com/yeahhe365/repomix-local-webui/commit/98ab30ae4e43b2bbf8c6542b26a5b109827a8ba9"
+        },
+        "date": 1785326313381,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Repomix Pack (macOS)",
+            "value": 1259,
+            "range": "±113",
+            "unit": "ms",
+            "extra": "Median of 30 runs\nQ1: 1198ms, Q3: 1311ms\nAll times: 1133, 1164, 1172, 1182, 1182, 1189, 1190, 1198, 1207, 1216, 1217, 1220, 1222, 1224, 1241, 1259, 1267, 1271, 1274, 1279, 1284, 1291, 1311, 1312, 1352, 1384, 1449, 1540, 1726, 1789ms"
+          },
+          {
+            "name": "Repomix Pack (Linux)",
+            "value": 1928,
+            "range": "±31",
+            "unit": "ms",
+            "extra": "Median of 20 runs\nQ1: 1913ms, Q3: 1944ms\nAll times: 1896, 1901, 1902, 1905, 1911, 1913, 1916, 1919, 1921, 1927, 1928, 1940, 1940, 1943, 1944, 1944, 1946, 1952, 1952, 1993ms"
+          },
+          {
+            "name": "Repomix Pack (Windows)",
+            "value": 2572,
+            "range": "±300",
+            "unit": "ms",
+            "extra": "Median of 20 runs\nQ1: 2506ms, Q3: 2806ms\nAll times: 2462, 2484, 2485, 2491, 2492, 2506, 2508, 2525, 2529, 2554, 2572, 2601, 2665, 2794, 2799, 2806, 2811, 2880, 2897, 2901ms"
           }
         ]
       }
