@@ -42,7 +42,6 @@ const {
   placeholder: uiText.value.upload.zipPlaceholder,
   icon: 'file',
   options: {
-    maxFileSize: 10 * 1024 * 1024, // 10MB
     acceptedTypes: ['.zip'],
     accept: '.zip',
     validateFile: validateZipFile,

@@ -43,23 +43,23 @@ const supportMessage = computed(() => messages[currentMessageIndex.value]);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 16px;
-  background: linear-gradient(135deg, rgba(255, 140, 0, 0.05) 0%, var(--vp-c-bg-soft) 100%);
-  border-top: 1px solid var(--vp-c-border);
+  padding: var(--amc-space-2, 8px) var(--amc-space-4, 16px);
+  background: var(--amc-surface-muted, var(--vp-c-bg-soft));
+  border-top: 1px solid var(--amc-border, var(--vp-c-border));
 }
 
 .support-link {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
-  color: var(--vp-c-text-2);
+  font-size: var(--amc-text-xs, 12px);
+  color: var(--amc-text-muted, var(--vp-c-text-2));
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: color var(--amc-transition, 0.15s ease);
 }
 
 .support-link:hover {
-  color: var(--vp-c-text-1);
+  color: var(--amc-text, var(--vp-c-text-1));
 }
 
 .support-icon {
@@ -69,11 +69,11 @@ const supportMessage = computed(() => messages[currentMessageIndex.value]);
 
 .link-text {
   text-decoration: underline;
-  text-decoration-color: var(--vp-c-text-3);
-  transition: text-decoration-color 0.2s ease;
+  text-decoration-color: var(--amc-text-subtle, var(--vp-c-text-3));
+  transition: text-decoration-color var(--amc-transition, 0.15s ease);
 }
 
 .support-link:hover .link-text {
-  text-decoration-color: var(--vp-c-text-1);
+  text-decoration-color: var(--amc-text, var(--vp-c-text-1));
 }
 </style>

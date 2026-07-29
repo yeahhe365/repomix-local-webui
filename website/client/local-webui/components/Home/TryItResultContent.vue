@@ -9,9 +9,8 @@ import type { PackResult } from '../../types/api';
 import type { PackOptions } from '../../types/pack';
 import { getEditorOptions } from '../../utils/tryIt/resultViewer';
 import SupportMessage from './SupportMessage.vue';
-import TryItCliCommandBanner from './TryItCliCommandBanner.vue';
 import TryItOutputActions from './TryItOutputActions.vue';
-import TryItResultMetadata from './TryItResultMetadata.vue';
+import TryItResultSummaryBar from './TryItResultSummaryBar.vue';
 
 ace.config.setModuleUrl('ace/theme/tomorrow', themeTomorrowUrl);
 ace.config.setModuleUrl('ace/theme/tomorrow_night', themeTomorrowNightUrl);
@@ -45,10 +44,10 @@ const handleEditorMount = (editor: Ace.Editor) => {
 
 <template>
   <div class="content-wrapper">
-    <TryItResultMetadata :result="result" />
+    <TryItResultSummaryBar :result="result" />
 
     <div class="output-panel">
-      <TryItOutputActions :result="result" />
+      <TryItOutputActions :result="result" :pack-options="packOptions" variant="floating" />
       <div class="editor-container">
         <VAceEditor
           v-model:value="result.content"
@@ -60,8 +59,6 @@ const handleEditorMount = (editor: Ace.Editor) => {
       </div>
     </div>
 
-    <TryItCliCommandBanner :result="result" :pack-options="packOptions" />
-
     <div class="support-wrapper">
       <SupportMessage />
     </div>
@@ -70,37 +67,31 @@ const handleEditorMount = (editor: Ace.Editor) => {
 
 <style scoped>
 .content-wrapper {
-  display: grid;
-  grid-template-columns: 300px 1fr;
-  grid-template-rows: 445px auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .output-panel {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
   max-height: 500px;
-  background: var(--vp-c-bg);
+  background: var(--amc-surface, var(--vp-c-bg));
   overflow: hidden;
 }
 
 .editor-container {
   height: 100%;
   width: 100%;
-  font-family: var(--vp-font-family-mono);
+  font-family: var(--amc-font-mono, var(--vp-font-family-mono));
 }
 
 .support-wrapper {
-  grid-column: 1 / -1;
+  margin-top: var(--amc-space-4, 16px);
 }
 
 @media (max-width: 768px) {
-  .content-wrapper {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto minmax(500px, auto) auto;
-    height: auto;
-  }
-
   .output-panel {
     height: 500px;
   }

@@ -8,7 +8,10 @@ interface Props {
   message?: string | null;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  stage: null,
+  message: null,
+});
 const uiText = useHomeUiText();
 
 const stageMessages: Record<PackProgressStage, string> = {
@@ -19,22 +22,54 @@ const stageMessages: Record<PackProgressStage, string> = {
   processing: uiText.value.loading.stages.processing,
 };
 
+const STAGE_ORDER: PackProgressStage[] = [
+  'cache-check',
+  'cloning',
+  'repository-fetch',
+  'extracting',
+  'processing',
+];
+
 const MAX_DETAIL_LENGTH = 60;
+
+const progressPercent = computed(() => {
+  if (!props.stage) return 0;
+  const index = STAGE_ORDER.indexOf(props.stage);
+  if (index < 0) return 0;
+  return ((index + 1) / STAGE_ORDER.length) * 100;
+});
 
 const detailMessage = computed(() => {
   const text = props.message || (props.stage && stageMessages[props.stage]) || '...';
   if (text.length <= MAX_DETAIL_LENGTH) return text;
   return `${text.slice(0, MAX_DETAIL_LENGTH)}...`;
 });
+
+// Match "Processing files... (12/340)" style messages to surface a progress line.
+const fileProgress = computed<{ done: number; total: number } | null>(() => {
+  const text = props.message || '';
+  const match = text.match(/\((\d+)\s*\/\s*(\d+)\)/);
+  if (!match) return null;
+  const done = Number.parseInt(match[1], 10);
+  const total = Number.parseInt(match[2], 10);
+  if (Number.isNaN(done) || Number.isNaN(total)) return null;
+  return { done, total };
+});
 </script>
 
 <template>
   <div class="loading">
+    <div class="progress-track">
+      <div class="progress-fill" :style="{ width: progressPercent + '%' }" :class="{ pulsing: !!stage }"></div>
+    </div>
     <div class="loading-header">
       <div class="spinner"></div>
       <p>{{ uiText.loading.title }}</p>
     </div>
     <p class="loading-detail">{{ detailMessage }}</p>
+    <p v-if="fileProgress" class="loading-files">
+      {{ uiText.loading.filesProgress(fileProgress.done, fileProgress.total) }}
+    </p>
     <div class="sponsor-section">
       <p class="sponsor-header">{{ uiText.loading.sponsorHeader }}</p>
       <a href="https://go.warp.dev/repomix" target="_blank" rel="noopener noreferrer">
@@ -56,72 +91,107 @@ const detailMessage = computed(() => {
 
 <style scoped>
 .loading {
-  padding: 24px;
+  padding: var(--amc-space-6, 24px);
   text-align: center;
+}
+
+.progress-track {
+  width: 100%;
+  height: 3px;
+  background: var(--amc-border-soft, var(--vp-c-divider));
+  border-radius: var(--amc-radius-pill, 999px);
+  overflow: hidden;
+  margin-bottom: var(--amc-space-4, 16px);
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0;
+  background: var(--amc-accent, var(--vp-c-brand-1));
+  border-radius: var(--amc-radius-pill, 999px);
+  transition: width var(--amc-transition-slow, 0.2s ease);
+}
+
+.progress-fill.pulsing {
+  animation: pulse 1.4s ease-in-out infinite;
 }
 
 .loading-header {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: var(--amc-space-2, 8px);
 }
 
 .loading-header p {
   margin: 0;
+  font-size: var(--amc-text-base, 14px);
+  color: var(--amc-text, var(--vp-c-text-1));
 }
 
 .loading-detail {
-  margin: 4px 0 0;
-  font-size: 0.8em;
-  color: var(--vp-c-text-3);
+  margin: var(--amc-space-1, 4px) 0 0;
+  font-size: var(--amc-text-sm, 13px);
+  color: var(--amc-text-subtle, var(--vp-c-text-3));
+}
+
+.loading-files {
+  margin: var(--amc-space-1, 4px) 0 0;
+  font-size: var(--amc-text-xs, 12px);
+  color: var(--amc-text-muted, var(--vp-c-text-2));
 }
 
 .spinner {
   flex-shrink: 0;
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--vp-c-brand-1);
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--amc-accent, var(--vp-c-brand-1));
   border-radius: 50%;
   border-top-color: transparent;
   animation: spin 1s linear infinite;
 }
 
 .sponsor-section {
-  margin-top: 16px;
+  margin-top: var(--amc-space-4, 16px);
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .sponsor-section p {
-  margin: 8px 0;
+  margin: var(--amc-space-2, 8px) 0;
 }
 
 .sponsor-section .sponsor-header {
-  font-size: 0.9em;
+  font-size: var(--amc-text-sm, 13px);
+  color: var(--amc-text-muted, var(--vp-c-text-2));
 }
 
 .sponsor-section img {
   max-width: 100%;
   height: auto;
-  margin: 12px 0;
+  margin: var(--amc-space-3, 12px) 0;
 }
 
 .sponsor-section .sponsor-title {
-  font-weight: bold;
-  font-size: 1.1em;
-  color: var(--vp-c-brand-1);
+  font-weight: 600;
+  font-size: var(--amc-text-base, 14px);
+  color: var(--amc-accent, var(--vp-c-brand-1));
   text-decoration: underline;
 }
 
 .sponsor-section .sponsor-subtitle {
-  font-size: 0.9em;
-  color: var(--vp-c-brand-1);
+  font-size: var(--amc-text-sm, 13px);
+  color: var(--amc-accent, var(--vp-c-brand-1));
   text-decoration: underline;
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
 }
 </style>

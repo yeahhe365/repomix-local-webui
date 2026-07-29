@@ -6,11 +6,6 @@ export const configPtBr = defineConfig({
   themeConfig: {
     nav: [
       { text: 'Guia', link: '/pt-br/guide/', activeMatch: '^/pt-br/guide/' },
-      {
-        text: 'Extensão do Chrome',
-        link: 'https://chromewebstore.google.com/detail/repomix/fimfamikepjgchehkohedilpdigcpkoa',
-      },
-      { text: 'Entrar no Discord', link: 'https://discord.gg/wNYzTwZFku' },
     ],
     sidebar: {
       '/pt-br/guide/': [

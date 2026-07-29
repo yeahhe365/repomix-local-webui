@@ -50,7 +50,6 @@ jobs:
           tests/website/localPathBrowserNavigation.test.ts
           tests/website/localPathInput.test.ts
           tests/website/server/localPathMode.test.ts
-          tests/website/server/rateLimitMiddleware.test.ts
           tests/website/siteLocaleConfig.test.ts
 
   lint-website-client:

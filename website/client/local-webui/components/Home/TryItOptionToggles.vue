@@ -1,16 +1,22 @@
 <script setup lang="ts">
-import { HelpCircle } from 'lucide-vue-next';
+import { computed } from 'vue';
 import { useHomeUiText } from './useHomeUiText';
 
-defineProps<{
-  fileSummary: boolean;
-  directoryStructure: boolean;
-  removeComments: boolean;
-  removeEmptyLines: boolean;
-  showLineNumbers: boolean;
-  outputParsable: boolean;
-  compress: boolean;
-}>();
+const props = withDefaults(
+  defineProps<{
+    fileSummary: boolean;
+    directoryStructure: boolean;
+    removeComments: boolean;
+    removeEmptyLines: boolean;
+    showLineNumbers: boolean;
+    outputParsable: boolean;
+    compress: boolean;
+    variant?: 'default' | 'output' | 'content';
+  }>(),
+  {
+    variant: 'default',
+  },
+);
 
 const emit = defineEmits<{
   'update:fileSummary': [value: boolean];
@@ -27,114 +33,102 @@ const uiText = useHomeUiText();
 function checked(event: Event) {
   return (event.target as HTMLInputElement).checked;
 }
+
+interface ToggleDef {
+  key: 'fileSummary' | 'directoryStructure' | 'showLineNumbers' | 'outputParsable' | 'compress' | 'removeComments' | 'removeEmptyLines';
+  label: string;
+  hint: string;
+  emitName:
+    | 'update:fileSummary'
+    | 'update:directoryStructure'
+    | 'update:showLineNumbers'
+    | 'update:outputParsable'
+    | 'update:compress'
+    | 'update:removeComments'
+    | 'update:removeEmptyLines';
+}
+
+// Group toggles per the spec: output options vs content processing.
+const outputToggles = computed<ToggleDef[]>(() => [
+  {
+    key: 'fileSummary',
+    label: uiText.value.options.includeFileSummary,
+    hint: uiText.value.options.hints.fileSummary,
+    emitName: 'update:fileSummary',
+  },
+  {
+    key: 'directoryStructure',
+    label: uiText.value.options.includeDirectoryStructure,
+    hint: uiText.value.options.hints.directoryStructure,
+    emitName: 'update:directoryStructure',
+  },
+  {
+    key: 'showLineNumbers',
+    label: uiText.value.options.showLineNumbers,
+    hint: uiText.value.options.hints.showLineNumbers,
+    emitName: 'update:showLineNumbers',
+  },
+  {
+    key: 'outputParsable',
+    label: uiText.value.options.outputParsableFormat,
+    hint: uiText.value.options.hints.outputParsable,
+    emitName: 'update:outputParsable',
+  },
+]);
+
+const contentToggles = computed<ToggleDef[]>(() => [
+  {
+    key: 'compress',
+    label: uiText.value.options.compressCode,
+    hint: uiText.value.options.hints.compress,
+    emitName: 'update:compress',
+  },
+  {
+    key: 'removeComments',
+    label: uiText.value.options.removeComments,
+    hint: uiText.value.options.hints.removeComments,
+    emitName: 'update:removeComments',
+  },
+  {
+    key: 'removeEmptyLines',
+    label: uiText.value.options.removeEmptyLines,
+    hint: uiText.value.options.hints.removeEmptyLines,
+    emitName: 'update:removeEmptyLines',
+  },
+]);
+
+const visibleToggles = computed(() => {
+  if (props.variant === 'output') return outputToggles.value;
+  if (props.variant === 'content') return contentToggles.value;
+  return [...outputToggles.value, ...contentToggles.value];
+});
 </script>
 
 <template>
-  <div class="option-section">
-    <p class="option-label">{{ uiText.options.outputFormatOptions }}</p>
-    <div class="checkbox-group">
+  <div class="checkbox-group">
+    <label v-for="toggle in visibleToggles" :key="toggle.key" class="checkbox-item">
       <label class="checkbox-label">
         <input
-          :checked="fileSummary"
-          @change="emit('update:fileSummary', checked($event))"
+          :checked="props[toggle.key]"
+          @change="emit(toggle.emitName, checked($event))"
           type="checkbox"
           class="checkbox-input"
         />
-        <span>{{ uiText.options.includeFileSummary }}</span>
+        <span>{{ toggle.label }}</span>
       </label>
-      <label class="checkbox-label">
-        <input
-          :checked="directoryStructure"
-          @change="emit('update:directoryStructure', checked($event))"
-          type="checkbox"
-          class="checkbox-input"
-        />
-        <span>{{ uiText.options.includeDirectoryStructure }}</span>
-      </label>
-      <label class="checkbox-label">
-        <input
-          :checked="showLineNumbers"
-          @change="emit('update:showLineNumbers', checked($event))"
-          type="checkbox"
-          class="checkbox-input"
-        />
-        <span>{{ uiText.options.showLineNumbers }}</span>
-      </label>
-      <label class="checkbox-label">
-        <input
-          :checked="outputParsable"
-          @change="emit('update:outputParsable', checked($event))"
-          type="checkbox"
-          class="checkbox-input"
-        />
-        <div class="parsable-option">
-          <span>{{ uiText.options.outputParsableFormat }}</span>
-          <div class="tooltip-container">
-            <HelpCircle :size="16" class="help-icon" :aria-label="uiText.options.outputParsableInfoAria" />
-            <div class="tooltip-content">
-              {{ uiText.options.outputParsableHelp }}
-              <div class="tooltip-arrow"></div>
-            </div>
-          </div>
-        </div>
-      </label>
-    </div>
-  </div>
-
-  <div class="option-section">
-    <p class="option-label">{{ uiText.options.fileProcessingOptions }}</p>
-    <div class="checkbox-group">
-      <label class="checkbox-label">
-        <input :checked="compress" @change="emit('update:compress', checked($event))" type="checkbox" class="checkbox-input" />
-        <div class="option-with-tooltip">
-          <span>{{ uiText.options.compressCode }}</span>
-          <div class="tooltip-container">
-            <HelpCircle :size="16" class="help-icon" :aria-label="uiText.options.compressInfoAria" />
-            <div class="tooltip-content">
-              {{ uiText.options.compressHelp }}
-              <div class="tooltip-arrow"></div>
-            </div>
-          </div>
-        </div>
-      </label>
-      <label class="checkbox-label">
-        <input
-          :checked="removeComments"
-          @change="emit('update:removeComments', checked($event))"
-          type="checkbox"
-          class="checkbox-input"
-        />
-        <span>{{ uiText.options.removeComments }}</span>
-      </label>
-      <label class="checkbox-label">
-        <input
-          :checked="removeEmptyLines"
-          @change="emit('update:removeEmptyLines', checked($event))"
-          type="checkbox"
-          class="checkbox-input"
-        />
-        <span>{{ uiText.options.removeEmptyLines }}</span>
-      </label>
-    </div>
+      <p class="checkbox-hint">{{ toggle.hint }}</p>
+    </label>
   </div>
 </template>
 
 <style scoped>
-.option-section {
+.checkbox-group {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--amc-space-2, 8px);
 }
 
-.option-label {
-  font-size: 14px;
-  font-weight: 500;
-  margin: 0;
-  color: var(--vp-c-text-2);
-  padding-bottom: 4px;
-}
-
-.checkbox-group {
+.checkbox-item {
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -143,71 +137,23 @@ function checked(event: Event) {
 .checkbox-label {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--amc-space-2, 8px);
   cursor: pointer;
-  font-size: 14px;
-  color: var(--vp-c-text-1);
+  font-size: var(--amc-text-sm, 13px);
+  color: var(--amc-text, var(--vp-c-text-1));
 }
 
 .checkbox-input {
-  width: 16px;
-  height: 16px;
-  accent-color: var(--vp-c-brand-1);
+  width: 15px;
+  height: 15px;
+  accent-color: var(--amc-accent, var(--vp-c-brand-1));
+  flex-shrink: 0;
 }
 
-.option-with-tooltip,
-.parsable-option {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.tooltip-container {
-  position: relative;
-  display: inline-block;
-}
-
-.help-icon {
-  color: #666;
-  cursor: help;
-  transition: color 0.2s;
-}
-
-.help-icon:hover {
-  color: #333;
-}
-
-.tooltip-content {
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-bottom: 8px;
-  padding: 8px 12px;
-  background: #333;
-  color: white;
-  font-size: 0.875rem;
-  width: 250px;
-  border-radius: 4px;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.2s, visibility 0.2s;
-  z-index: 10;
-  text-align: left;
-}
-
-.tooltip-container:hover .tooltip-content {
-  opacity: 1;
-  visibility: visible;
-}
-
-.tooltip-arrow {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border-width: 8px;
-  border-style: solid;
-  border-color: #333 transparent transparent transparent;
+.checkbox-hint {
+  margin: 0 0 0 23px;
+  font-size: var(--amc-text-xs, 12px);
+  color: var(--amc-text-subtle, var(--vp-c-text-3));
+  line-height: 1.4;
 }
 </style>

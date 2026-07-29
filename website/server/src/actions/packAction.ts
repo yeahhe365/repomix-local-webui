@@ -6,7 +6,6 @@ import { z } from 'zod';
 import { processLocalPath } from '../domains/pack/localPath.js';
 import { processZipFile } from '../domains/pack/processZipFile.js';
 import { processRemoteRepo } from '../domains/pack/remoteRepo.js';
-import { FILE_SIZE_LIMITS } from '../domains/pack/utils/fileUtils.js';
 import { sanitizePattern } from '../domains/pack/utils/validation.js';
 import type { PackProgressStage, PackResult } from '../types.js';
 import { getClientInfo } from '../utils/clientInfo.js';
@@ -39,10 +38,6 @@ const packRequestSchema = z
       })
       .refine((file) => file.type === 'application/zip' || file.name.endsWith('.zip'), {
         message: 'Only ZIP files are allowed',
-      })
-      .refine((file) => file.size <= FILE_SIZE_LIMITS.MAX_ZIP_SIZE, {
-        // 10MB limit
-        message: 'File size must be less than 10MB',
       })
       .optional(),
     format: z.enum(['xml', 'markdown', 'plain']),

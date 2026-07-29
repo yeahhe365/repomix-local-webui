@@ -2,10 +2,12 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { useHomeUiText } from '../components/Home/useHomeUiText';
 import type { FileInfo, PackProgressStage, PackResult } from '../types/api';
 import type { InputMode } from '../types/tryIt';
-import { loadTryItPageState, resolveInitialTryItPageState, saveTryItPageState } from '../utils/tryItPersistence';
-import { handlePackRequest } from '../utils/tryIt/requestHandlers';
 import { isValidAbsolutePath } from '../utils/tryIt/localPathInput';
 import { isValidRemoteValue } from '../utils/tryIt/remoteValidation';
+import { handlePackRequest } from '../utils/tryIt/requestHandlers';
+import { downloadResult } from '../utils/tryIt/resultViewer';
+import { loadTryItPageState, resolveInitialTryItPageState, saveTryItPageState } from '../utils/tryItPersistence';
+import { deriveRecentPackLabel, upsertRecentPack } from '../utils/tryItRecentPacks';
 import { parseUrlParameters } from '../utils/urlParams';
 import { usePackOptions } from './usePackOptions';
 
@@ -18,7 +20,7 @@ export function usePackRequest() {
   const inputUrl = ref('');
   const inputLocalPath = ref('');
   const inputRepositoryUrl = ref('');
-  const mode = ref<InputMode>('url');
+  const mode = ref<InputMode>('localPath');
   const uploadedFile = ref<File | null>(null);
 
   // Request states
@@ -88,6 +90,41 @@ export function usePackRequest() {
         {
           onSuccess: (response) => {
             result.value = response;
+
+            // Record a recent-pack entry on success so users can re-run quickly.
+            if (mode.value === 'url') {
+              const source = inputUrl.value.trim();
+              upsertRecentPack({
+                mode: 'url',
+                source,
+                label: deriveRecentPackLabel('url', source),
+                format: packOptions.format,
+                includePatterns: packOptions.includePatterns,
+                ignorePatterns: packOptions.ignorePatterns,
+              });
+            } else if (mode.value === 'localPath') {
+              const source = inputLocalPath.value.trim();
+              upsertRecentPack({
+                mode: 'localPath',
+                source,
+                label: deriveRecentPackLabel('localPath', source),
+                format: packOptions.format,
+                includePatterns: packOptions.includePatterns,
+                ignorePatterns: packOptions.ignorePatterns,
+              });
+            } else if (mode.value === 'file') {
+              const fileName = uploadedFile.value?.name ?? '';
+              if (fileName) {
+                upsertRecentPack({
+                  mode: 'file',
+                  source: fileName,
+                  label: deriveRecentPackLabel('file', fileName),
+                  format: packOptions.format,
+                  includePatterns: packOptions.includePatterns,
+                  ignorePatterns: packOptions.ignorePatterns,
+                });
+              }
+            }
           },
           onError: (errorMessage) => {
             error.value = errorMessage;
@@ -114,6 +151,16 @@ export function usePackRequest() {
     } finally {
       loading.value = false;
       requestController = null;
+    }
+  }
+
+  async function submitAndDownloadRequest() {
+    await submitRequest();
+    // Only trigger download when packing actually succeeded (a result exists and no error).
+    // submitRequest resets result/error at the start, so there's no risk of reading a stale result.
+    // Early-return on invalid input, abort (onAbort), and server errors (onError) all leave result.value null.
+    if (result.value && !error.value) {
+      downloadResult(result.value.content, result.value.format, result.value);
     }
   }
 
@@ -216,6 +263,7 @@ export function usePackRequest() {
     handleFileUpload,
     resetRequest,
     submitRequest,
+    submitAndDownloadRequest,
     repackWithSelectedFiles,
     cancelRequest,
 

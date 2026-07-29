@@ -24,6 +24,8 @@ interface Props {
 interface Emits {
   (e: 'repack', selectedFiles: FileInfo[]): void;
   (e: 'repack-completed'): void;
+  (e: 'apply-ignore-hint'): void;
+  (e: 'retry'): void;
 }
 
 const props = defineProps<Props>();
@@ -64,6 +66,8 @@ const handleRepack = (selectedFiles: FileInfo[]) => {
       :error-type="errorType"
       :repository-url="repositoryUrl"
       :pack-options="packOptions"
+      @apply-ignore-hint="emit('apply-ignore-hint')"
+      @retry="emit('retry')"
     />
     <div v-else-if="result" class="result-content">
       <!-- Tab Navigation -->
@@ -104,9 +108,10 @@ const handleRepack = (selectedFiles: FileInfo[]) => {
 
 <style scoped>
 .result-viewer {
-  margin-top: 24px;
-  border: 1px solid var(--vp-c-border);
-  border-radius: 8px;
+  margin-top: var(--amc-space-5, 20px);
+  border: 1px solid var(--amc-border, var(--vp-c-border));
+  border-radius: var(--amc-radius-card, 8px);
+  box-shadow: var(--amc-shadow-sm, 0 1px 2px rgb(0 0 0 / 0.04));
   overflow: hidden;
 }
 
@@ -115,34 +120,47 @@ const handleRepack = (selectedFiles: FileInfo[]) => {
   flex-direction: column;
 }
 
+/* Underline-style tab navigation — Linear/Vercel minimal. */
 .tab-navigation {
   display: flex;
-  border-bottom: 1px solid var(--vp-c-border);
-  background: var(--vp-c-bg-soft);
+  gap: var(--amc-space-1, 4px);
+  padding: 0 var(--amc-space-4, 16px);
+  border-bottom: 1px solid var(--amc-border, var(--vp-c-border));
+  background: var(--amc-surface, var(--vp-c-bg));
 }
 
 .tab-button {
-  flex: 1;
-  padding: 12px 16px;
+  position: relative;
+  padding: var(--amc-space-3, 12px) var(--amc-space-3, 12px);
   border: none;
   background: transparent;
-  color: var(--vp-c-text-2);
-  font-size: 14px;
+  color: var(--amc-text-muted, var(--vp-c-text-2));
+  font-size: var(--amc-text-sm, 13px);
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
-  border-bottom: 2px solid transparent;
+  transition: color var(--amc-transition, 0.15s ease);
+}
+
+.tab-button::after {
+  content: '';
+  position: absolute;
+  left: var(--amc-space-3, 12px);
+  right: var(--amc-space-3, 12px);
+  bottom: -1px;
+  height: 2px;
+  background: transparent;
+  transition: background-color var(--amc-transition, 0.15s ease);
 }
 
 .tab-button:hover {
-  background: var(--vp-c-bg-alt);
-  color: var(--vp-c-text-1);
+  color: var(--amc-text, var(--vp-c-text-1));
 }
 
 .tab-button.active {
-  color: var(--vp-c-brand-1);
-  border-bottom-color: var(--vp-c-brand-1);
-  background: var(--vp-c-bg);
+  color: var(--amc-text, var(--vp-c-text-1));
 }
 
+.tab-button.active::after {
+  background: var(--amc-accent, var(--vp-c-brand-1));
+}
 </style>

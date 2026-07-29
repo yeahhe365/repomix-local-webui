@@ -10,6 +10,9 @@ export interface HomeUiText {
     cancel: string;
     packAria: string;
     cancelAria: string;
+    packDownload: string;
+    packDownloadAria: string;
+    packDownloadTooltip: string;
     resetOptions: string;
     copy: string;
     copied: string;
@@ -20,6 +23,11 @@ export interface HomeUiText {
     shareAria: string;
     onlyMobile: string;
     runLocally: string;
+    copyCliCommand: string;
+    clear: string;
+    moreActions: string;
+    submitHint: string;
+    downloadStarted: string;
   };
   options: {
     outputFormat: string;
@@ -49,6 +57,24 @@ export interface HomeUiText {
     compressHelp: string;
     removeComments: string;
     removeEmptyLines: string;
+    accordion: {
+      title: string;
+      summary: (formatLabel: string, customCount: number) => string;
+    };
+    sections: {
+      filter: string;
+      outputOptions: string;
+      contentProcessing: string;
+    };
+    hints: {
+      fileSummary: string;
+      directoryStructure: string;
+      showLineNumbers: string;
+      outputParsable: string;
+      compress: string;
+      removeComments: string;
+      removeEmptyLines: string;
+    };
   };
   upload: {
     zipPlaceholder: string;
@@ -74,6 +100,16 @@ export interface HomeUiText {
     localPathBrowserSearchPlaceholder: string;
     localPathBrowserRecentTitle: string;
     fileSelectionWarning: (threshold: number) => string;
+    modeLabels: {
+      url: string;
+      localPath: string;
+      file: string;
+    };
+    modeHints: {
+      url: string;
+      localPath: string;
+      file: string;
+    };
   };
   fileSelection: {
     title: string;
@@ -98,6 +134,7 @@ export interface HomeUiText {
     sponsorHeader: string;
     sponsorTitle: string;
     sponsorSubtitle: string;
+    filesProgress: (done: number, total: number) => string;
   };
   result: {
     tabs: {
@@ -121,6 +158,10 @@ export interface HomeUiText {
     copyCommandError: string;
     shareUnavailable: string;
     shareFailed: string;
+    summaryBar: {
+      details: string;
+      collapse: string;
+    };
   };
   errors: {
     tryCliInstead: string;
@@ -150,6 +191,12 @@ export interface HomeUiText {
     uploadZipFile: string;
     folderEmpty: string;
     folderNameRequired: string;
+    kindInput: string;
+    kindNetwork: string;
+    kindServer: string;
+    retry: string;
+    applyIgnoreHint: string;
+    otherWays: string;
   };
   support: {
     starLinkText: string;
@@ -170,6 +217,17 @@ export interface HomeUiText {
     applyAria: (name: string) => string;
     deleteAria: (name: string) => string;
   };
+  toast: {
+    packSuccessTitle: string;
+    savePresetPrompt: string;
+    savePresetAction: string;
+    presetSaved: string;
+  };
+  recentPacks: {
+    title: string;
+    clearAll: string;
+    applyAria: (label: string) => string;
+  };
 }
 
 const enText: HomeUiText = {
@@ -184,6 +242,9 @@ const enText: HomeUiText = {
     cancel: 'Cancel',
     packAria: 'Pack repository',
     cancelAria: 'Cancel processing',
+    packDownload: 'Pack & Download',
+    packDownloadAria: 'Pack repository and download output',
+    packDownloadTooltip: 'Pack and download the output file in one click',
     resetOptions: 'Reset all options to default values',
     copy: 'Copy',
     copied: 'Copied!',
@@ -194,6 +255,11 @@ const enText: HomeUiText = {
     shareAria: 'Share output via mobile apps',
     onlyMobile: 'Only available on mobile devices',
     runLocally: 'Run locally:',
+    copyCliCommand: 'Copy CLI command',
+    clear: 'Clear',
+    moreActions: 'More actions',
+    submitHint: 'Ctrl+Enter to pack',
+    downloadStarted: 'Download started',
   },
   options: {
     outputFormat: 'Output Format',
@@ -225,10 +291,28 @@ const enText: HomeUiText = {
       'Utilize Tree-sitter to intelligently extract essential code signatures and structure while removing implementation details, significantly reducing token usage.',
     removeComments: 'Remove Comments',
     removeEmptyLines: 'Remove Empty Lines',
+    accordion: {
+      title: 'Advanced options',
+      summary: (formatLabel, customCount) => `${formatLabel} · ${customCount} customized`,
+    },
+    sections: {
+      filter: 'Filters',
+      outputOptions: 'Output options',
+      contentProcessing: 'Content processing',
+    },
+    hints: {
+      fileSummary: 'Include a stats summary at the top of the output',
+      directoryStructure: 'Include the directory tree',
+      showLineNumbers: 'Prefix each line with its line number',
+      outputParsable: 'Escape output for machine parsing (increases tokens)',
+      compress: 'Extract code structure via Tree-sitter to cut tokens',
+      removeComments: 'Strip comments in supported languages',
+      removeEmptyLines: 'Remove blank lines to shrink output',
+    },
   },
   upload: {
-    zipPlaceholder: 'Drop your ZIP file here or click to browse (max 10MB)',
-    folderPlaceholder: 'Drop your folder here or click to browse (max 10MB)',
+    zipPlaceholder: 'Drop your ZIP file here or click to browse',
+    folderPlaceholder: 'Drop your folder here or click to browse',
     selectedPrefix: 'Selected:',
     urlPlaceholder: 'GitHub repository URL or user/repo (e.g., yamadashy/repomix)',
     urlInputAria: 'GitHub repository URL',
@@ -251,6 +335,16 @@ const enText: HomeUiText = {
     localPathBrowserRecentTitle: 'Recent',
     fileSelectionWarning: (threshold) =>
       `Selecting more than ${threshold} files may cause processing issues or timeouts. Consider reducing your selection for better performance.`,
+    modeLabels: {
+      url: 'URL',
+      localPath: 'Path',
+      file: 'ZIP',
+    },
+    modeHints: {
+      url: 'Pack from a GitHub repository URL',
+      localPath: 'Browse and pick a local folder',
+      file: 'Upload a ZIP archive',
+    },
   },
   fileSelection: {
     title: 'File Selection',
@@ -282,6 +376,7 @@ const enText: HomeUiText = {
     sponsorHeader: 'Special thanks to:',
     sponsorTitle: 'Warp, built for coding with multiple AI agents',
     sponsorSubtitle: 'Available for MacOS, Linux, & Windows',
+    filesProgress: (done, total) => `Processed ${done}/${total} files`,
   },
   result: {
     tabs: {
@@ -305,6 +400,10 @@ const enText: HomeUiText = {
     copyCommandError: 'Failed to copy command:',
     shareUnavailable: 'Share is only available on mobile devices',
     shareFailed: 'Share was cancelled or failed',
+    summaryBar: {
+      details: 'Details',
+      collapse: 'Collapse',
+    },
   },
   errors: {
     tryCliInstead: 'Try using the command line tool instead:',
@@ -335,6 +434,12 @@ const enText: HomeUiText = {
     uploadZipFile: 'Please upload a ZIP file',
     folderEmpty: 'The folder is empty.',
     folderNameRequired: 'Folder name is required',
+    kindInput: 'Invalid input, please check and retry',
+    kindNetwork: 'Request timed out or network error',
+    kindServer: 'Service temporarily unavailable',
+    retry: 'Retry',
+    applyIgnoreHint: 'Apply common ignore patterns',
+    otherWays: 'Alternative: use the CLI',
   },
   support: {
     starLinkText: 'Star this project',
@@ -355,6 +460,17 @@ const enText: HomeUiText = {
     applyAria: (name) => `Apply preset ${name}`,
     deleteAria: (name) => `Delete preset ${name}`,
   },
+  toast: {
+    packSuccessTitle: 'Pack finished',
+    savePresetPrompt: 'Save this path as a preset?',
+    savePresetAction: 'Save as preset',
+    presetSaved: 'Preset saved',
+  },
+  recentPacks: {
+    title: 'Recent packs',
+    clearAll: 'Clear all',
+    applyAria: (label) => `Apply recent pack ${label}`,
+  },
 };
 
 const zhText: HomeUiText = {
@@ -369,6 +485,9 @@ const zhText: HomeUiText = {
     cancel: '取消',
     packAria: '打包仓库',
     cancelAria: '取消处理',
+    packDownload: '打包并下载',
+    packDownloadAria: '打包仓库并下载输出文件',
+    packDownloadTooltip: '一键打包并下载输出文件',
     resetOptions: '将所有选项重置为默认值',
     copy: '复制',
     copied: '已复制',
@@ -379,6 +498,11 @@ const zhText: HomeUiText = {
     shareAria: '通过移动端应用分享结果',
     onlyMobile: '仅支持移动设备',
     runLocally: '本地运行：',
+    copyCliCommand: '复制本地命令',
+    clear: '清空',
+    moreActions: '更多操作',
+    submitHint: 'Ctrl+Enter 提交',
+    downloadStarted: '已开始下载',
   },
   options: {
     outputFormat: '输出格式',
@@ -408,10 +532,28 @@ const zhText: HomeUiText = {
     compressHelp: '利用 Tree-sitter 智能提取关键代码签名和结构，移除实现细节，显著减少 token 使用量。',
     removeComments: '移除注释',
     removeEmptyLines: '移除空行',
+    accordion: {
+      title: '高级选项',
+      summary: (formatLabel, customCount) => `${formatLabel} · ${customCount} 项自定义`,
+    },
+    sections: {
+      filter: '过滤条件',
+      outputOptions: '输出选项',
+      contentProcessing: '内容处理',
+    },
+    hints: {
+      fileSummary: '在输出开头包含统计摘要',
+      directoryStructure: '包含目录树结构',
+      showLineNumbers: '每行前添加行号',
+      outputParsable: '按格式转义输出，便于机器解析（会增加 token）',
+      compress: '用 Tree-sitter 提取代码结构，显著减少 token',
+      removeComments: '删除支持语言中的注释',
+      removeEmptyLines: '删除空行以减小输出',
+    },
   },
   upload: {
-    zipPlaceholder: '将 ZIP 文件拖到这里，或点击选择（最大 10MB）',
-    folderPlaceholder: '将文件夹拖到这里，或点击选择（最大 10MB）',
+    zipPlaceholder: '将 ZIP 文件拖到这里，或点击选择',
+    folderPlaceholder: '将文件夹拖到这里，或点击选择',
     selectedPrefix: '已选择：',
     urlPlaceholder: 'GitHub 仓库地址或 user/repo（例如：yamadashy/repomix）',
     urlInputAria: 'GitHub 仓库地址',
@@ -434,6 +576,16 @@ const zhText: HomeUiText = {
     localPathBrowserRecentTitle: '最近访问',
     fileSelectionWarning: (threshold) =>
       `选择超过 ${threshold} 个文件可能导致处理问题或超时。建议减少选择范围以获得更好的性能。`,
+    modeLabels: {
+      url: 'URL',
+      localPath: '路径',
+      file: 'ZIP',
+    },
+    modeHints: {
+      url: '从 GitHub 仓库地址打包',
+      localPath: '浏览并选择本机文件夹',
+      file: '上传 ZIP 压缩包',
+    },
   },
   fileSelection: {
     title: '文件选择',
@@ -465,6 +617,7 @@ const zhText: HomeUiText = {
     sponsorHeader: '特别鸣谢：',
     sponsorTitle: 'Warp，专为多 AI agent 编码打造',
     sponsorSubtitle: '支持 macOS、Linux 和 Windows',
+    filesProgress: (done, total) => `已处理 ${done}/${total} 个文件`,
   },
   result: {
     tabs: {
@@ -488,6 +641,10 @@ const zhText: HomeUiText = {
     copyCommandError: '复制命令失败：',
     shareUnavailable: '仅支持在移动设备上分享',
     shareFailed: '分享已取消或失败',
+    summaryBar: {
+      details: '详情',
+      collapse: '收起',
+    },
   },
   errors: {
     tryCliInstead: '试试改用命令行工具：',
@@ -517,6 +674,12 @@ const zhText: HomeUiText = {
     uploadZipFile: '请上传 ZIP 文件',
     folderEmpty: '文件夹为空。',
     folderNameRequired: '必须提供文件夹名称',
+    kindInput: '输入有误，请检查后重试',
+    kindNetwork: '请求超时或网络异常',
+    kindServer: '服务暂时不可用',
+    retry: '重试',
+    applyIgnoreHint: '填入常见忽略模式',
+    otherWays: '其他方式：使用 CLI',
   },
   support: {
     starLinkText: '给项目点个 Star',
@@ -536,6 +699,17 @@ const zhText: HomeUiText = {
     includeLabel: '包含',
     applyAria: (name) => `应用预设 ${name}`,
     deleteAria: (name) => `删除预设 ${name}`,
+  },
+  toast: {
+    packSuccessTitle: '打包完成',
+    savePresetPrompt: '是否将此路径保存为预设？',
+    savePresetAction: '保存为预设',
+    presetSaved: '已保存预设',
+  },
+  recentPacks: {
+    title: '最近打包',
+    clearAll: '清空全部',
+    applyAria: (label) => `应用最近打包 ${label}`,
   },
 };
 

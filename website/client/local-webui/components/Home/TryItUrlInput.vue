@@ -129,6 +129,7 @@ function handleKeydown(event: KeyboardEvent) {
   height: 100%;
   display: flex;
   flex-direction: column;
+  gap: var(--amc-space-2, 8px);
 }
 
 .url-input-container {
@@ -139,14 +140,14 @@ function handleKeydown(event: KeyboardEvent) {
 
 .repository-input {
   width: 100%;
-  height: 50px;
-  padding: 12px 16px;
-  font-size: 16px;
-  border: 1px solid var(--vp-c-border);
-  border-radius: 8px;
-  background: var(--vp-c-bg);
-  color: var(--vp-c-text-1);
-  transition: border-color 0.2s;
+  height: var(--amc-control-h, 40px);
+  padding: 0 var(--amc-space-3, 12px);
+  font-size: var(--amc-text-md, 15px);
+  border: 1px solid var(--amc-border, var(--vp-c-border));
+  border-radius: var(--amc-radius, 6px);
+  background: var(--amc-surface, var(--vp-c-bg));
+  color: var(--amc-text, var(--vp-c-text-1));
+  transition: border-color var(--amc-transition, 0.15s ease);
   /* Hide datalist dropdown arrow in different browsers */
   &::-webkit-calendar-picker-indicator {
     display: none !important;
@@ -162,31 +163,34 @@ function handleKeydown(event: KeyboardEvent) {
   appearance: none;
 }
 
+.repository-input::placeholder {
+  color: var(--amc-text-subtle, var(--vp-c-text-3));
+}
+
 .repository-input:focus {
   outline: none;
-  border-color: var(--vp-c-brand-1);
+  border-color: var(--amc-accent, var(--vp-c-brand-1));
+  box-shadow: 0 0 0 3px var(--amc-accent-soft, var(--vp-c-brand-soft));
 }
 
 .repository-input.invalid {
-  border-color: var(--vp-c-danger-1);
+  border-color: var(--amc-danger, var(--vp-c-danger-1));
 }
 
 .url-warning {
-  margin-top: 8px;
   display: flex;
   align-items: center;
-  gap: 6px;
-  color: var(--vp-c-warning-1);
-  font-size: 14px;
+  gap: var(--amc-space-1, 4px);
+  color: var(--amc-warning, var(--vp-c-warning-1));
+  font-size: var(--amc-text-sm, 13px);
 }
 
 .warning-icon {
   flex-shrink: 0;
-  color: var(--vp-c-warning-1);
+  color: var(--amc-warning, var(--vp-c-warning-1));
 }
 
 .pack-button-container {
-  margin-top: 16px;
   display: flex;
   justify-content: center;
   width: 100%;

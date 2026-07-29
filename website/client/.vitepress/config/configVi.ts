@@ -6,11 +6,6 @@ export const configVi = defineConfig({
   themeConfig: {
     nav: [
       { text: 'Hướng dẫn', link: '/vi/guide/', activeMatch: '^/vi/guide/' },
-      {
-        text: 'Tiện ích Chrome',
-        link: 'https://chromewebstore.google.com/detail/repomix/fimfamikepjgchehkohedilpdigcpkoa',
-      },
-      { text: 'Tham gia Discord', link: 'https://discord.gg/wNYzTwZFku' },
     ],
     sidebar: {
       '/vi/guide/': [

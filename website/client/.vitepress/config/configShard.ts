@@ -146,10 +146,6 @@ export const configShard = defineConfig({
       { icon: 'discord', link: 'https://discord.gg/wNYzTwZFku' },
       { icon: 'github', link: githubUrl },
     ],
-    footer: {
-      message: 'Released under the MIT License.',
-      copyright: 'Copyright © 2024 Kazuki Yamada',
-    },
     outline: [2, 3],
     // Language selection
     langMenuLabel: 'Languages',

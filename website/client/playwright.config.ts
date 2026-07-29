@@ -7,6 +7,7 @@ export default defineConfig({
     baseURL: 'http://127.0.0.1:4173',
     headless: true,
     serviceWorkers: 'block',
+    channel: 'chrome',
   },
   webServer: {
     command: 'python3 -m http.server 4173 -d .vitepress/dist',

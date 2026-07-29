@@ -19,7 +19,7 @@ export type PackRequestOptions = Omit<PackOptions, 'format' | 'includePatterns' 
 };
 
 export const DEFAULT_PACK_OPTIONS: PackOptions = {
-  format: 'xml',
+  format: 'plain',
   removeComments: false,
   removeEmptyLines: false,
   showLineNumbers: false,

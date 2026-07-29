@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { FolderArchive, FolderOpen, Link2, RotateCcw } from 'lucide-vue-next';
+import { ChevronDown, FolderArchive, FolderOpen, Link2 } from 'lucide-vue-next';
+import { onMounted, onUnmounted, ref } from 'vue';
 import type { InputMode } from '../../types/tryIt';
 import PackButton from './PackButton.vue';
 import TryItFileUpload from './TryItFileUpload.vue';
@@ -25,6 +26,7 @@ const emit = defineEmits<{
   submit: [];
   reset: [];
   cancel: [];
+  'pack-download': [];
 }>();
 
 const uiText = useHomeUiText();
@@ -32,55 +34,144 @@ const uiText = useHomeUiText();
 function setMode(mode: InputMode) {
   emit('update:mode', mode);
 }
+
+// Split dropdown state + outside-click handling.
+const splitRef = ref<HTMLDetailsElement | null>(null);
+
+function closeSplitMenu() {
+  if (splitRef.value) {
+    splitRef.value.open = false;
+  }
+}
+
+function onPackDownload() {
+  emit('pack-download');
+  closeSplitMenu();
+}
+
+function handleOutsideClick(event: MouseEvent) {
+  if (splitRef.value && !splitRef.value.contains(event.target as Node)) {
+    closeSplitMenu();
+  }
+}
+
+// Keyboard shortcuts: Ctrl/Cmd+Enter to submit, Esc to cancel while loading.
+function handleGlobalKeydown(event: KeyboardEvent) {
+  if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+    if (!event.defaultPrevented) {
+      event.preventDefault();
+    }
+    emit('submit');
+    return;
+  }
+
+  if (event.key === 'Escape') {
+    closeSplitMenu();
+    emit('cancel');
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('mousedown', handleOutsideClick);
+  window.addEventListener('keydown', handleGlobalKeydown);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('mousedown', handleOutsideClick);
+  window.removeEventListener('keydown', handleGlobalKeydown);
+});
 </script>
 
 <template>
-  <div class="input-row">
-    <div class="tab-container">
-      <button type="button" :class="{ active: mode === 'url' }" @click="setMode('url')">
-        <Link2 size="20" class="icon" />
-      </button>
-      <button type="button" :class="{ active: mode === 'localPath' }" @click="setMode('localPath')">
-        <FolderOpen size="20" class="icon" />
-      </button>
-      <button type="button" :class="{ active: mode === 'file' }" @click="setMode('file')">
-        <FolderArchive size="20" class="icon" />
-      </button>
-    </div>
-
-    <div class="input-field">
-      <TryItFileUpload v-if="mode === 'file'" @upload="emit('upload', $event)" :loading="loading" :show-button="false" />
-      <TryItLocalPathInput
-        v-else-if="mode === 'localPath'"
-        :path="localPath"
-        :loading="loading"
-        @update:path="emit('update:localPath', $event)"
-        @keydown="emit('keydown', $event)"
-        @submit="emit('submit')"
-        :show-button="false"
-      />
-      <TryItUrlInput
-        v-else
-        :url="url"
-        :loading="loading"
-        @update:url="emit('update:url', $event)"
-        @keydown="emit('keydown', $event)"
-        @submit="emit('submit')"
-        :show-button="false"
-      />
-    </div>
-
-    <div class="pack-button-wrapper">
-      <PackButton :loading="loading" :isValid="isSubmitValid" @cancel="emit('cancel')" />
-      <div v-if="shouldShowReset" class="tooltip-container">
-        <button class="reset-button" @click="emit('reset')" type="button">
-          <RotateCcw :size="20" />
+  <div>
+    <div class="input-row">
+      <div class="segmented" role="tablist" :aria-label="uiText.upload.localPathBrowserRoots">
+        <button
+          type="button"
+          class="segmented__item"
+          :class="{ 'is-active': mode === 'url' }"
+          role="tab"
+          :aria-selected="mode === 'url'"
+          :title="uiText.upload.modeHints.url"
+          @click="setMode('url')"
+        >
+          <Link2 :size="16" />
+          <span class="segmented__label">{{ uiText.upload.modeLabels.url }}</span>
         </button>
-        <div class="tooltip-content">
-          {{ uiText.actions.resetOptions }}
-          <div class="tooltip-arrow"></div>
-        </div>
+        <button
+          type="button"
+          class="segmented__item"
+          :class="{ 'is-active': mode === 'localPath' }"
+          role="tab"
+          :aria-selected="mode === 'localPath'"
+          :title="uiText.upload.modeHints.localPath"
+          @click="setMode('localPath')"
+        >
+          <FolderOpen :size="16" />
+          <span class="segmented__label">{{ uiText.upload.modeLabels.localPath }}</span>
+        </button>
+        <button
+          type="button"
+          class="segmented__item"
+          :class="{ 'is-active': mode === 'file' }"
+          role="tab"
+          :aria-selected="mode === 'file'"
+          :title="uiText.upload.modeHints.file"
+          @click="setMode('file')"
+        >
+          <FolderArchive :size="16" />
+          <span class="segmented__label">{{ uiText.upload.modeLabels.file }}</span>
+        </button>
       </div>
+
+      <div class="input-field">
+        <TryItFileUpload v-if="mode === 'file'" @upload="emit('upload', $event)" :loading="loading" :show-button="false" />
+        <TryItLocalPathInput
+          v-else-if="mode === 'localPath'"
+          :path="localPath"
+          :loading="loading"
+          @update:path="emit('update:localPath', $event)"
+          @keydown="emit('keydown', $event)"
+          @submit="emit('submit')"
+          :show-button="false"
+        />
+        <TryItUrlInput
+          v-else
+          :url="url"
+          :loading="loading"
+          @update:url="emit('update:url', $event)"
+          @keydown="emit('keydown', $event)"
+          @submit="emit('submit')"
+          :show-button="false"
+        />
+      </div>
+
+      <div class="pack-split">
+        <PackButton :loading="loading" :isValid="isSubmitValid" @cancel="emit('cancel')" />
+        <details class="split-menu" ref="splitRef">
+          <summary class="split-trigger" :aria-label="uiText.actions.moreActions" :title="uiText.actions.moreActions">
+            <ChevronDown :size="16" />
+          </summary>
+          <div class="split-menu__panel">
+            <button
+              type="button"
+              class="split-menu__item"
+              :disabled="loading || !isSubmitValid"
+              :title="uiText.actions.packDownloadTooltip"
+              @click="onPackDownload"
+            >
+              {{ uiText.actions.packDownload }}
+            </button>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <div class="input-footer">
+      <span class="kbd-hint">{{ uiText.actions.submitHint }}</span>
+      <button v-if="shouldShowReset" type="button" class="reset-link" @click="emit('reset')">
+        {{ uiText.actions.clear }}
+      </button>
     </div>
   </div>
 </template>
@@ -89,154 +180,195 @@ function setMode(mode: InputMode) {
 .input-row {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
-  gap: 12px;
-  margin-bottom: 24px;
+  gap: var(--amc-space-3, 12px);
+  margin-bottom: var(--amc-space-2, 8px);
   align-items: start;
 }
 
-.tab-container {
-  display: flex;
-  flex-direction: row;
-  width: 240px;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid var(--vp-c-border);
-}
-
-.tab-container button {
-  flex: 1;
-  height: 48px;
-  padding: 0 16px;
-  background: var(--vp-c-bg);
-  cursor: pointer;
-  font-size: 16px;
-  white-space: nowrap;
-  transition: all 0.2s;
-  display: flex;
+/* Segmented control — Linear-style. A single rounded container with dividers
+ * between items; the active item gets a subtle fill + accent text. */
+.segmented {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  position: relative;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--amc-border, var(--vp-c-border));
+  border-radius: var(--amc-radius, 6px);
+  background: var(--amc-surface-muted, var(--vp-c-bg-soft));
 }
 
-.tab-container button:not(:first-child)::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 25%;
-  height: 50%;
-  width: 1px;
-  background-color: var(--vp-c-border);
+.segmented__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: var(--amc-control-h-sm, 32px);
+  padding: 0 var(--amc-space-3, 12px);
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--amc-text-muted, var(--vp-c-text-2));
+  font-size: var(--amc-text-sm, 13px);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--amc-transition, 0.15s ease), color var(--amc-transition, 0.15s ease);
+  white-space: nowrap;
 }
 
-.tab-container button:first-child {
-  border-radius: 8px 0 0 8px;
+.segmented__item:hover:not(.is-active) {
+  color: var(--amc-text, var(--vp-c-text-1));
 }
 
-.tab-container button:last-child {
-  border-radius: 0 8px 8px 0;
-}
-
-.tab-container button.active {
-  background: var(--vp-c-brand-1);
-  color: white;
-}
-
-.tab-container button.active::before,
-.tab-container button.active + button::before {
-  display: none;
-}
-
-.tab-container button .icon {
-  color: var(--vp-c-text-1);
-}
-
-.tab-container button.active .icon {
-  color: white;
+.segmented__item.is-active {
+  background: var(--amc-surface, var(--vp-c-bg));
+  color: var(--amc-text, var(--vp-c-text-1));
+  box-shadow: var(--amc-shadow-sm, 0 1px 2px rgb(0 0 0 / 0.04));
 }
 
 .input-field {
-  align-self: start;
+  align-self: stretch;
   min-width: 0;
   flex: 1;
   overflow: hidden;
 }
 
-.pack-button-wrapper {
-  display: flex;
+.pack-split {
+  display: inline-flex;
   align-items: stretch;
-  align-self: start;
+  align-self: stretch;
   flex-shrink: 0;
-  gap: 8px;
+  position: relative;
 }
 
-.reset-button {
-  display: flex;
+/* Rounded-left modifier applied to the PackButton without changing PackButton.vue itself. */
+.pack-split :deep(.pack-button) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.split-menu {
+  position: relative;
+}
+
+.split-menu > summary {
+  list-style: none;
+}
+.split-menu > summary::-webkit-details-marker {
+  display: none;
+}
+
+.split-trigger {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 50px;
-  height: 50px;
-  background: white;
-  color: var(--vp-c-text-2);
-  border: 1px solid var(--vp-c-border);
-  border-radius: 8px;
+  width: 36px;
+  height: var(--amc-control-h, 40px);
+  border: 1px solid var(--amc-accent, var(--vp-c-brand-1));
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-top-right-radius: var(--amc-radius, 6px);
+  border-bottom-right-radius: var(--amc-radius, 6px);
+  background: var(--amc-accent, var(--vp-c-brand-1));
+  color: var(--amc-accent-on, #fff);
   cursor: pointer;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
+  transition: background-color var(--amc-transition-slow, 0.2s ease), border-color var(--amc-transition-slow, 0.2s ease);
+  /* 1px inner divider between the two halves (avoids border-left width jitter). */
+  box-shadow: inset 1px 0 0 color-mix(in srgb, #fff 30%, transparent);
 }
 
-.reset-button:hover {
-  color: var(--vp-c-brand-1);
-  border-color: var(--vp-c-brand-1);
-  background: var(--vp-c-bg-soft);
+/* Unified hover for both halves; skip the loading state so the Cancel-hover (red) still applies. */
+.pack-split:hover :deep(.pack-button:not(.pack-button--loading):not(:disabled)),
+.pack-split:hover .split-trigger {
+  background: var(--amc-accent-hover, var(--vp-c-brand-2));
+  border-color: var(--amc-accent-hover, var(--vp-c-brand-2));
 }
 
-.tooltip-container {
-  position: relative;
-  display: inline-block;
-}
-
-.tooltip-content {
+.split-menu__panel {
   position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-bottom: 8px;
-  padding: 8px 12px;
-  background: #333;
-  color: white;
-  font-size: 0.875rem;
-  white-space: nowrap;
-  border-radius: 4px;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.2s, visibility 0.2s;
-  z-index: 10;
+  right: 0;
+  top: calc(100% + 4px);
+  min-width: 180px;
+  padding: var(--amc-space-1, 4px);
+  border: 1px solid var(--amc-border, var(--vp-c-border));
+  border-radius: var(--amc-radius, 6px);
+  background: var(--amc-surface, var(--vp-c-bg));
+  box-shadow: var(--amc-shadow, 0 4px 12px rgb(0 0 0 / 0.12));
+  z-index: 20;
 }
 
-.tooltip-container:hover .tooltip-content {
-  opacity: 1;
-  visibility: visible;
+.split-menu__item {
+  display: block;
+  width: 100%;
+  padding: var(--amc-space-2, 8px) var(--amc-space-3, 12px);
+  border: none;
+  border-radius: var(--amc-radius-sm, 4px);
+  background: transparent;
+  color: var(--amc-text, var(--vp-c-text-1));
+  font-size: var(--amc-text-sm, 13px);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--amc-transition, 0.15s ease), color var(--amc-transition, 0.15s ease);
 }
 
-.tooltip-arrow {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border-width: 8px;
-  border-style: solid;
-  border-color: #333 transparent transparent transparent;
+.split-menu__item:hover:not(:disabled) {
+  background: var(--amc-surface-muted, var(--vp-c-bg-soft));
+  color: var(--amc-accent, var(--vp-c-brand-1));
+}
+
+.split-menu__item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.input-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: -8px;
+  margin-bottom: var(--amc-space-3, 12px);
+  gap: var(--amc-space-2, 8px);
+}
+
+.kbd-hint {
+  font-size: var(--amc-text-xs, 12px);
+  color: var(--amc-text-subtle, var(--vp-c-text-3));
+}
+
+.reset-link {
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-size: var(--amc-text-xs, 12px);
+  color: var(--amc-text-subtle, var(--vp-c-text-3));
+  cursor: pointer;
+  transition: color var(--amc-transition, 0.15s ease);
+}
+
+.reset-link:hover {
+  color: var(--amc-accent, var(--vp-c-brand-1));
 }
 
 @media (max-width: 768px) {
   .input-row {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: var(--amc-space-3, 12px);
   }
 
-  .tab-container,
-  .pack-button-wrapper {
+  .segmented {
     width: 100%;
+    justify-content: space-between;
+  }
+
+  .segmented__item {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .pack-split {
+    width: 100%;
+  }
+
+  .pack-split :deep(.pack-button) {
+    flex: 1;
   }
 }
 </style>

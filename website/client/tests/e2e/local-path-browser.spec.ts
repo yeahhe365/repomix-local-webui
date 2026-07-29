@@ -60,7 +60,9 @@ test('searches directories and restores recent local-path context after reload',
 
   await page.goto('/');
 
-  await page.locator('.tab-container button').nth(1).click();
+  // The webui now defaults to local-path mode, so the path input is already
+  // visible. Ensure the mode is set (idempotent) and open the browser dialog.
+  await page.locator('.segmented__item').nth(1).click();
   await page.getByRole('button', { name: '浏览本地目录' }).click();
   await expect(page.getByRole('button', { name: '/Users' })).toBeVisible();
   await page.getByRole('button', { name: '/Users' }).dblclick();

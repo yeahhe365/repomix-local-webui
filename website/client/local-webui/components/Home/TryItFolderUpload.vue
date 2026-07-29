@@ -42,7 +42,6 @@ const {
   placeholder: uiText.value.upload.folderPlaceholder,
   icon: 'folder',
   options: {
-    maxFileSize: 10 * 1024 * 1024, // 10MB
     webkitdirectory: true,
     validateFiles: (files: File[]) => {
       if (files.length === 0) {

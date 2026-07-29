@@ -62,15 +62,15 @@ function emitInput(event: Event, eventName: 'update:includePatterns' | 'update:i
 }
 
 .option-label {
-  font-size: 14px;
+  font-size: var(--amc-text-sm, 13px);
   font-weight: 500;
   margin: 0;
-  color: var(--vp-c-text-2);
-  padding-bottom: 4px;
+  color: var(--amc-text-muted, var(--vp-c-text-2));
+  padding-bottom: var(--amc-space-1, 4px);
 }
 
 .option-label a {
-  color: var(--vp-c-brand-1);
+  color: var(--amc-accent, var(--vp-c-brand-1));
   text-decoration: none;
 }
 
@@ -80,26 +80,32 @@ function emitInput(event: Event, eventName: 'update:includePatterns' | 'update:i
 
 .input-group {
   display: flex;
-  gap: 8px;
+  gap: var(--amc-space-2, 8px);
 }
 
 .pattern-input {
   width: 100%;
-  padding: 8px 12px;
-  font-size: 16px;
-  border: 1px solid var(--vp-c-border);
-  border-radius: 6px;
-  background: var(--vp-c-bg);
-  color: var(--vp-c-text-1);
-  transition: border-color 0.2s;
+  height: var(--amc-control-h-sm, 32px);
+  padding: 0 var(--amc-space-3, 12px);
+  font-size: var(--amc-text-sm, 13px);
+  border: 1px solid var(--amc-border, var(--vp-c-border));
+  border-radius: var(--amc-radius, 6px);
+  background: var(--amc-surface, var(--vp-c-bg));
+  color: var(--amc-text, var(--vp-c-text-1));
+  transition: border-color var(--amc-transition, 0.15s ease);
+}
+
+.pattern-input::placeholder {
+  color: var(--amc-text-subtle, var(--vp-c-text-3));
 }
 
 .pattern-input:hover {
-  border-color: var(--vp-c-brand-1);
+  border-color: var(--amc-text-subtle, var(--vp-c-text-3));
 }
 
 .pattern-input:focus {
   outline: none;
-  border-color: var(--vp-c-brand-1);
+  border-color: var(--amc-accent, var(--vp-c-brand-1));
+  box-shadow: 0 0 0 3px var(--amc-accent-soft, var(--vp-c-brand-soft));
 }
 </style>

@@ -48,37 +48,40 @@ const uiText = useHomeUiText();
 }
 
 .option-label {
-  font-size: 14px;
+  font-size: var(--amc-text-sm, 13px);
   font-weight: 500;
   margin: 0;
-  color: var(--vp-c-text-2);
-  padding-bottom: 4px;
+  color: var(--amc-text-muted, var(--vp-c-text-2));
+  padding-bottom: var(--amc-space-1, 4px);
 }
 
 .format-buttons {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  gap: var(--amc-space-2, 8px);
 }
 
 .format-button {
-  padding: 8px 16px;
-  font-size: 14px;
-  border: 1px solid var(--vp-c-border);
-  border-radius: 6px;
-  background: var(--vp-c-bg);
-  color: var(--vp-c-text-1);
+  height: var(--amc-control-h-sm, 32px);
+  padding: 0 var(--amc-space-3, 12px);
+  font-size: var(--amc-text-sm, 13px);
+  font-weight: 500;
+  border: 1px solid var(--amc-border, var(--vp-c-border));
+  border-radius: var(--amc-radius-sm, 6px);
+  background: var(--amc-surface, var(--vp-c-bg));
+  color: var(--amc-text, var(--vp-c-text-1));
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: border-color var(--amc-transition, 0.15s ease), background-color var(--amc-transition, 0.15s ease),
+    color var(--amc-transition, 0.15s ease);
 }
 
-.format-button:hover {
-  border-color: var(--vp-c-brand-1);
+.format-button:hover:not(.active) {
+  border-color: var(--amc-text-subtle, var(--vp-c-text-3));
 }
 
 .format-button.active {
-  background: var(--vp-c-brand-1);
-  border-color: var(--vp-c-brand-1);
-  color: white;
+  background: var(--amc-accent, var(--vp-c-brand-1));
+  border-color: var(--amc-accent, var(--vp-c-brand-1));
+  color: var(--amc-accent-on, #fff);
 }
 </style>

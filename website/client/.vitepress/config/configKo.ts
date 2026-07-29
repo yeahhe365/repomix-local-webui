@@ -6,11 +6,6 @@ export const configKo = defineConfig({
   themeConfig: {
     nav: [
       { text: '가이드', link: '/ko/guide/', activeMatch: '^/ko/guide/' },
-      {
-        text: 'Chrome 확장 프로그램',
-        link: 'https://chromewebstore.google.com/detail/repomix/fimfamikepjgchehkohedilpdigcpkoa',
-      },
-      { text: 'Discord 참여', link: 'https://discord.gg/wNYzTwZFku' },
     ],
     sidebar: {
       '/ko/guide/': [

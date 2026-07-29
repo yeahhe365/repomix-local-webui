@@ -13,7 +13,7 @@
     <span class="pack-button__text pack-button__text--hover">
       {{ loading ? uiText.actions.cancel : uiText.actions.pack }}
     </span>
-    <PackIcon v-if="!loading" :size="20" />
+    <PackIcon v-if="!loading" :size="18" />
   </button>
 </template>
 
@@ -44,27 +44,29 @@ function handleClick(event: MouseEvent) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 12px 24px;
-  height: 50px;
-  width: 100%;
-  font-size: 16px;
-  font-weight: 500;
-  background: var(--vp-c-brand-1);
-  color: white;
-  border: none;
-  border-radius: 8px;
+  gap: var(--amc-space-2, 8px);
+  height: var(--amc-control-h, 40px);
+  min-width: 104px;
+  padding: 0 var(--amc-space-4, 16px);
+  font-size: var(--amc-text-md, 15px);
+  font-weight: 600;
+  background: var(--amc-accent, var(--vp-c-brand-1));
+  color: var(--amc-accent-on, #fff);
+  border: 1px solid var(--amc-accent, var(--vp-c-brand-1));
+  border-radius: var(--amc-radius, 6px);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color var(--amc-transition-slow, 0.2s ease), border-color var(--amc-transition-slow, 0.2s ease);
   position: relative;
 }
 
 .pack-button:hover:not(:disabled) {
-  background: var(--vp-c-brand-2);
+  background: var(--amc-accent-hover, var(--vp-c-brand-2));
+  border-color: var(--amc-accent-hover, var(--vp-c-brand-2));
 }
 
 .pack-button--loading:hover {
-  background: var(--vp-c-danger-1);
+  background: var(--amc-danger, var(--vp-c-danger-1));
+  border-color: var(--amc-danger, var(--vp-c-danger-1));
 }
 
 .pack-button:disabled {
@@ -73,7 +75,7 @@ function handleClick(event: MouseEvent) {
 }
 
 .pack-button__text {
-  transition: opacity 0.2s ease;
+  transition: opacity var(--amc-transition-slow, 0.2s ease);
 }
 
 .pack-button__text--hover {
@@ -90,14 +92,9 @@ function handleClick(event: MouseEvent) {
   opacity: 1;
 }
 
-.pack-button-icon {
-  font-size: 20px;
-  line-height: 1;
-}
-
 @media (max-width: 768px) {
   .pack-button {
-    width: 100%;
+    flex: 1;
   }
 }
 </style>

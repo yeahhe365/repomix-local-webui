@@ -5,7 +5,7 @@ import { validateFileList, validateSingleFile } from '../utils/tryIt/fileUploadV
 
 export function useFileUpload(config: FileUploadConfig) {
   const {
-    maxFileSize = 10 * 1024 * 1024, // 10MB default
+    maxFileSize = Number.POSITIVE_INFINITY, // No client-side size cap by default
     acceptedTypes = [],
     accept = '',
     multiple = false,

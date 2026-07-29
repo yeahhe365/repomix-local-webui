@@ -12,13 +12,20 @@ import {
 } from '../../utils/tryItPresets';
 import { useHomeUiText } from './useHomeUiText';
 
-const props = defineProps<{
-  mode: InputMode;
-  localPath: string;
-  includePatterns: string;
-  ignorePatterns: string;
-  loading?: boolean;
-}>();
+const props = withDefaults(
+  defineProps<{
+    mode: InputMode;
+    localPath: string;
+    includePatterns: string;
+    ignorePatterns: string;
+    loading?: boolean;
+    inline?: boolean;
+  }>(),
+  {
+    loading: false,
+    inline: false,
+  },
+);
 
 const emit = defineEmits<{
   apply: [preset: TryItPreset];
@@ -111,7 +118,7 @@ defineExpose({ refreshPresets });
 </script>
 
 <template>
-  <section v-if="showSection" class="presets-section" :aria-label="uiText.presets.sectionAria">
+  <section v-if="showSection" class="presets-section" :class="{ 'presets-section--inline': inline }" :aria-label="uiText.presets.sectionAria">
     <div class="presets-row">
       <span class="presets-title">{{ uiText.presets.title }}</span>
 
@@ -182,23 +189,31 @@ defineExpose({ refreshPresets });
 
 <style scoped>
 .presets-section {
-  margin: 0 0 12px;
+  margin: 0 0 var(--amc-space-3, 12px);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--amc-space-2, 8px);
+}
+
+.presets-section--inline {
+  margin: 0;
+}
+
+.presets-section--inline .presets-row {
+  display: inline-flex;
 }
 
 .presets-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px 8px;
+  gap: 6px var(--amc-space-2, 8px);
 }
 
 .presets-title {
-  font-size: 12px;
+  font-size: var(--amc-text-xs, 12px);
   font-weight: 600;
-  color: var(--vp-c-text-3);
+  color: var(--amc-text-subtle, var(--vp-c-text-3));
   flex-shrink: 0;
   margin-right: 2px;
 }
@@ -223,20 +238,21 @@ defineExpose({ refreshPresets });
   max-width: 160px;
   min-height: 28px;
   padding: 4px 22px 4px 10px;
-  border: 1px solid var(--vp-c-border);
-  border-radius: 999px;
-  background: var(--vp-c-bg);
-  color: var(--vp-c-text-1);
-  font-size: 12px;
+  border: 1px solid var(--amc-border, var(--vp-c-border));
+  border-radius: var(--amc-radius-pill, 999px);
+  background: var(--amc-surface, var(--vp-c-bg));
+  color: var(--amc-text, var(--vp-c-text-1));
+  font-size: var(--amc-text-xs, 12px);
   line-height: 1.2;
   cursor: pointer;
-  transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+  transition: border-color var(--amc-transition, 0.15s ease), background-color var(--amc-transition, 0.15s ease),
+    color var(--amc-transition, 0.15s ease);
 }
 
 .preset-card:hover:not(:disabled) {
-  border-color: var(--vp-c-brand-1);
-  background: color-mix(in srgb, var(--vp-c-brand-1) 8%, var(--vp-c-bg));
-  color: var(--vp-c-brand-1);
+  border-color: var(--amc-accent, var(--vp-c-brand-1));
+  background: color-mix(in srgb, var(--amc-accent, var(--vp-c-brand-1)) 8%, var(--amc-surface, var(--vp-c-bg)));
+  color: var(--amc-accent, var(--vp-c-brand-1));
 }
 
 .preset-name {
@@ -257,13 +273,14 @@ defineExpose({ refreshPresets });
   border: none;
   border-radius: 50%;
   background: transparent;
-  color: var(--vp-c-text-3);
+  color: var(--amc-text-subtle, var(--vp-c-text-3));
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   opacity: 0.55;
-  transition: opacity 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+  transition: opacity var(--amc-transition, 0.15s ease), color var(--amc-transition, 0.15s ease),
+    background-color var(--amc-transition, 0.15s ease);
 }
 
 .preset-item:hover .delete-button,
@@ -272,8 +289,8 @@ defineExpose({ refreshPresets });
 }
 
 .delete-button:hover:not(:disabled) {
-  color: var(--vp-c-danger-1, #e11d48);
-  background: color-mix(in srgb, var(--vp-c-danger-1, #e11d48) 12%, transparent);
+  color: var(--amc-danger, #e11d48);
+  background: color-mix(in srgb, var(--amc-danger, #e11d48) 12%, transparent);
 }
 
 .save-button,
@@ -283,25 +300,26 @@ defineExpose({ refreshPresets });
   align-items: center;
   justify-content: center;
   gap: 4px;
-  border: 1px solid var(--vp-c-border);
-  border-radius: 999px;
-  background: var(--vp-c-bg);
-  color: var(--vp-c-text-2);
+  border: 1px solid var(--amc-border, var(--vp-c-border));
+  border-radius: var(--amc-radius-pill, 999px);
+  background: var(--amc-surface, var(--vp-c-bg));
+  color: var(--amc-text-muted, var(--vp-c-text-2));
   cursor: pointer;
-  transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+  transition: border-color var(--amc-transition, 0.15s ease), background-color var(--amc-transition, 0.15s ease),
+    color var(--amc-transition, 0.15s ease);
 }
 
 .save-button {
   min-height: 28px;
   padding: 0 10px;
-  font-size: 12px;
-  color: var(--vp-c-brand-1);
-  border-color: color-mix(in srgb, var(--vp-c-brand-1) 35%, var(--vp-c-border));
+  font-size: var(--amc-text-xs, 12px);
+  color: var(--amc-accent, var(--vp-c-brand-1));
+  border-color: color-mix(in srgb, var(--amc-accent, var(--vp-c-brand-1)) 35%, var(--amc-border, var(--vp-c-border)));
 }
 
 .save-button:hover:not(:disabled) {
-  border-color: var(--vp-c-brand-1);
-  background: color-mix(in srgb, var(--vp-c-brand-1) 8%, var(--vp-c-bg));
+  border-color: var(--amc-accent, var(--vp-c-brand-1));
+  background: color-mix(in srgb, var(--amc-accent, var(--vp-c-brand-1)) 8%, var(--amc-surface, var(--vp-c-bg)));
 }
 
 .save-form {
@@ -313,34 +331,34 @@ defineExpose({ refreshPresets });
 .name-input {
   flex: 1;
   min-width: 0;
-  height: 30px;
-  padding: 0 10px;
-  border: 1px solid var(--vp-c-border);
-  border-radius: 8px;
-  background: var(--vp-c-bg);
-  color: var(--vp-c-text-1);
-  font-size: 13px;
+  height: var(--amc-control-h-sm, 32px);
+  padding: 0 var(--amc-space-3, 12px);
+  border: 1px solid var(--amc-border, var(--vp-c-border));
+  border-radius: var(--amc-radius, 6px);
+  background: var(--amc-surface, var(--vp-c-bg));
+  color: var(--amc-text, var(--vp-c-text-1));
+  font-size: var(--amc-text-sm, 13px);
 }
 
 .name-input:focus {
   outline: none;
-  border-color: var(--vp-c-brand-1);
+  border-color: var(--amc-accent, var(--vp-c-brand-1));
 }
 
 .primary-button {
-  min-height: 30px;
+  min-height: var(--amc-control-h-sm, 32px);
   padding: 0 12px;
-  font-size: 12px;
-  border-radius: 8px;
-  background: var(--vp-c-brand-1);
-  border-color: var(--vp-c-brand-1);
-  color: white;
+  font-size: var(--amc-text-xs, 12px);
+  border-radius: var(--amc-radius, 6px);
+  background: var(--amc-accent, var(--vp-c-brand-1));
+  border-color: var(--amc-accent, var(--vp-c-brand-1));
+  color: var(--amc-accent-on, #fff);
 }
 
 .ghost-button {
-  width: 30px;
-  height: 30px;
-  border-radius: 8px;
+  width: var(--amc-control-h-sm, 32px);
+  height: var(--amc-control-h-sm, 32px);
+  border-radius: var(--amc-radius, 6px);
   flex-shrink: 0;
 }
 

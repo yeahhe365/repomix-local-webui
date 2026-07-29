@@ -1,0 +1,217 @@
+/**
+ * AMC local-webui design tokens — Linear/Vercel-inspired minimal system.
+ *
+ * The local webui is rendered inside VitePress, which exposes its own theme
+ * variables (--vp-c-*). These tokens layer on top of them: the surfaces and
+ * text colors below reference VitePress vars so light/dark mode stays in sync
+ * automatically, while spacing, radius, control height and shadow are owned
+ * here for a consistent, denser look than the default 24px/16px theme.
+ *
+ * Components should prefer these tokens over raw values. Brand orange
+ * (--vp-c-brand-1, defined in theme/style.css) is used only for emphasis:
+ * primary buttons, active states, and focused borders. Everything else is
+ * neutral black/white/grey.
+ */
+
+:root {
+  /* ---- Color: neutral surfaces mapped to VitePress theme ---- */
+  --amc-bg: var(--vp-c-bg);
+  --amc-bg-soft: var(--vp-c-bg-soft);
+  --amc-bg-alt: var(--vp-c-bg-alt);
+  --amc-surface: var(--vp-c-bg);
+  --amc-surface-muted: var(--vp-c-bg-soft);
+  --amc-border: var(--vp-c-border);
+  --amc-border-soft: var(--vp-c-divider);
+  --amc-border-strong: var(--vp-c-border);
+
+  --amc-text: var(--vp-c-text-1);
+  --amc-text-muted: var(--vp-c-text-2);
+  --amc-text-subtle: var(--vp-c-text-3);
+
+  /* ---- Color: brand emphasis (orange, used sparingly) ---- */
+  --amc-accent: var(--vp-c-brand-1);
+  --amc-accent-hover: var(--vp-c-brand-2);
+  --amc-accent-soft: var(--vp-c-brand-soft);
+  --amc-accent-on: #ffffff;
+
+  --amc-success: var(--vp-c-green-1);
+  --amc-warning: var(--vp-c-yellow-1);
+  --amc-danger: var(--vp-c-danger-1);
+  --amc-warning-soft: var(--vp-c-warning-soft);
+
+  /* ---- Spacing: tightened 8/12/16/20 scale ---- */
+  --amc-space-1: 4px;
+  --amc-space-2: 8px;
+  --amc-space-3: 12px;
+  --amc-space-4: 16px;
+  --amc-space-5: 20px;
+  --amc-space-6: 24px;
+
+  /* ---- Radius: uniform 6px controls / 8px cards; pill only for tags ---- */
+  --amc-radius-sm: 6px;
+  --amc-radius: 6px;
+  --amc-radius-card: 8px;
+  --amc-radius-lg: 8px;
+  --amc-radius-pill: 999px;
+
+  /* ---- Shadow: single micro layer; hierarchy via borders ---- */
+  --amc-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.04);
+  --amc-shadow: 0 1px 2px rgb(0 0 0 / 0.05), 0 4px 12px rgb(0 0 0 / 0.05);
+  --amc-shadow-lg: 0 1px 2px rgb(0 0 0 / 0.05), 0 12px 32px rgb(0 0 0 / 0.08);
+
+  /* ---- Control heights: unified 36–40px ---- */
+  --amc-control-h: 40px;
+  --amc-control-h-sm: 32px;
+  --amc-control-h-lg: 44px;
+
+  /* ---- Type ---- */
+  --amc-font-mono: var(--vp-font-family-mono);
+  --amc-text-xs: 12px;
+  --amc-text-sm: 13px;
+  --amc-text-base: 14px;
+  --amc-text-md: 15px;
+  --amc-text-lg: 16px;
+
+  --amc-transition: 0.15s ease;
+  --amc-transition-slow: 0.2s ease;
+}
+
+/* Shared control primitives. Components apply these via :global when a scoped
+ * style block needs them, but most components define their own selectors that
+ * mirror these values. Keeping the source-of-truth here means a tone tweak
+ * (e.g. raising control height) lands everywhere at once. */
+
+/* Card surface — used by TryIt container, result panel, metadata panel. */
+.amc-card {
+  background: var(--amc-surface);
+  border: 1px solid var(--amc-border);
+  border-radius: var(--amc-radius-card);
+  box-shadow: var(--amc-shadow-sm);
+}
+
+/* Standard text input. */
+.amc-input {
+  height: var(--amc-control-h);
+  padding: 0 var(--amc-space-3);
+  font-size: var(--amc-text-base);
+  color: var(--amc-text);
+  background: var(--amc-surface);
+  border: 1px solid var(--amc-border);
+  border-radius: var(--amc-radius);
+  transition: border-color var(--amc-transition);
+}
+
+.amc-input::placeholder {
+  color: var(--amc-text-subtle);
+}
+
+.amc-input:focus {
+  outline: none;
+  border-color: var(--amc-accent);
+  box-shadow: 0 0 0 3px var(--amc-accent-soft);
+}
+
+.amc-input.is-invalid {
+  border-color: var(--amc-danger);
+}
+
+/* Base button. Variants below layer color on top. */
+.amc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--amc-space-2);
+  height: var(--amc-control-h);
+  padding: 0 var(--amc-space-4);
+  font-size: var(--amc-text-base);
+  font-weight: 500;
+  line-height: 1;
+  border: 1px solid var(--amc-border);
+  border-radius: var(--amc-radius);
+  background: var(--amc-surface);
+  color: var(--amc-text);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color var(--amc-transition),
+    border-color var(--amc-transition),
+    color var(--amc-transition),
+    opacity var(--amc-transition);
+}
+
+.amc-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Primary — accent fill, the only orange button on the page. */
+.amc-btn--primary {
+  background: var(--amc-accent);
+  border-color: var(--amc-accent);
+  color: var(--amc-accent-on);
+}
+
+.amc-btn--primary:hover:not(:disabled) {
+  background: var(--amc-accent-hover);
+  border-color: var(--amc-accent-hover);
+}
+
+/* Secondary — neutral outline, the workhorse button. */
+.amc-btn--secondary {
+  background: var(--amc-surface);
+  color: var(--amc-text);
+}
+
+.amc-btn--secondary:hover:not(:disabled) {
+  background: var(--amc-surface-muted);
+  border-color: var(--amc-text-subtle);
+}
+
+/* Ghost — borderless, used in dense toolbars. */
+.amc-btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--amc-text-muted);
+}
+
+.amc-btn--ghost:hover:not(:disabled) {
+  background: var(--amc-surface-muted);
+  color: var(--amc-text);
+}
+
+/* Pill tag — only place the full pill radius is used (presets, recent chips). */
+.amc-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--amc-space-1);
+  height: var(--amc-control-h-sm);
+  padding: 0 var(--amc-space-3);
+  font-size: var(--amc-text-sm);
+  border: 1px solid var(--amc-border);
+  border-radius: var(--amc-radius-pill);
+  background: var(--amc-surface);
+  color: var(--amc-text);
+  cursor: pointer;
+  transition:
+    border-color var(--amc-transition),
+    background-color var(--amc-transition),
+    color var(--amc-transition);
+}
+
+.amc-tag:hover:not(:disabled) {
+  border-color: var(--amc-accent);
+  color: var(--amc-accent);
+}
+
+.amc-tag:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Section label — small caps-style muted heading above option groups. */
+.amc-label {
+  margin: 0 0 var(--amc-space-2);
+  font-size: var(--amc-text-sm);
+  font-weight: 600;
+  color: var(--amc-text-muted);
+}

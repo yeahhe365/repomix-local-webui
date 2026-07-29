@@ -19,7 +19,8 @@ export function generateCliCommand(repositoryUrl: string | undefined, packOption
 
   // Only add options if packOptions is provided
   if (packOptions) {
-    // Format (only add if not default 'xml')
+    // Format: repomix defaults to XML with no --style flag, so emit --style
+    // for any non-xml choice (markdown, plain). plain is the webui default.
     if (packOptions.format && packOptions.format !== 'xml') {
       parts.push(`--style ${packOptions.format}`);
     }

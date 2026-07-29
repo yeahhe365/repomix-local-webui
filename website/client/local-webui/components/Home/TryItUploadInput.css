@@ -4,32 +4,35 @@
 }
 
 .upload-container {
-  border: 2px dashed var(--vp-c-border);
-  border-radius: 8px;
-  padding: 0 16px;
+  border: 1px dashed var(--amc-border, var(--vp-c-border));
+  border-radius: var(--amc-radius, 6px);
+  padding: 0 var(--amc-space-3, 12px);
   cursor: pointer;
-  transition: all 0.2s ease;
-  height: 50px;
+  transition:
+    border-color var(--amc-transition-slow, 0.2s ease),
+    background-color var(--amc-transition-slow, 0.2s ease);
+  height: var(--amc-control-h, 40px);
   display: flex;
   align-items: center;
-  background: var(--vp-c-bg);
+  background: var(--amc-surface, var(--vp-c-bg));
   user-select: none;
   width: 100%;
   box-sizing: border-box;
 }
 
 .upload-container:hover {
-  border-color: var(--vp-c-brand-1);
-  background-color: var(--vp-c-bg-soft);
+  border-color: var(--amc-accent, var(--vp-c-brand-1));
+  background-color: var(--amc-surface-muted, var(--vp-c-bg-soft));
 }
 
 .drag-active {
-  border-color: var(--vp-c-brand-1);
-  background-color: var(--vp-c-bg-soft);
+  border-color: var(--amc-accent, var(--vp-c-brand-1));
+  background-color: var(--amc-surface-muted, var(--vp-c-bg-soft));
+  border-style: solid;
 }
 
 .has-error {
-  border-color: var(--vp-c-danger-1);
+  border-color: var(--amc-danger, var(--vp-c-danger-1));
 }
 
 .hidden-input {
@@ -40,7 +43,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 12px;
+  gap: var(--amc-space-3, 12px);
   width: 100%;
   pointer-events: none;
   overflow: hidden;
@@ -54,16 +57,16 @@
 }
 
 .icon-folder {
-  color: var(--vp-c-text-1);
+  color: var(--amc-text-muted, var(--vp-c-text-2));
 }
 
 .icon-error {
-  color: var(--vp-c-danger-1);
+  color: var(--amc-danger, var(--vp-c-danger-1));
 }
 
 .upload-text {
   flex: 1;
-  font-size: 14px;
+  font-size: var(--amc-text-sm, 13px);
   min-width: 0;
   overflow: hidden;
 }
@@ -77,13 +80,13 @@
 }
 
 .error-message {
-  color: var(--vp-c-danger-1);
+  color: var(--amc-danger, var(--vp-c-danger-1));
 }
 
 .selected-file {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--amc-space-2, 8px);
   width: 100%;
   overflow: hidden;
 }
@@ -91,28 +94,27 @@
 .clear-button {
   background: none;
   border: none;
-  color: var(--vp-c-text-2);
+  color: var(--amc-text-muted, var(--vp-c-text-2));
   cursor: pointer;
   font-size: 1.2em;
-  padding: 0 4px;
+  padding: 0 var(--amc-space-1, 4px);
   line-height: 1;
   flex-shrink: 0;
   pointer-events: auto;
 }
 
 .clear-button:hover {
-  color: var(--vp-c-text-1);
+  color: var(--amc-text, var(--vp-c-text-1));
 }
 
 .pack-button-container {
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-top: 16px;
 }
 
 @media (max-width: 640px) {
   .upload-text p {
-    font-size: 13px;
+    font-size: 12px;
   }
 }

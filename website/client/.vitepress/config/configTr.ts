@@ -6,11 +6,6 @@ export const configTr = defineConfig({
   themeConfig: {
     nav: [
       { text: 'Rehber', link: '/tr/guide/', activeMatch: '^/tr/guide/' },
-      {
-        text: 'Chrome Eklentisi',
-        link: 'https://chromewebstore.google.com/detail/repomix/fimfamikepjgchehkohedilpdigcpkoa',
-      },
-      { text: "Discord'a Katıl", link: 'https://discord.gg/wNYzTwZFku' },
     ],
     sidebar: {
       '/tr/guide/': [

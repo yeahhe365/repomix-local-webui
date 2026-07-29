@@ -8,15 +8,6 @@ import { AppError } from '../../utils/errorHandler.js';
 import { logMemoryUsage } from '../../utils/logger.js';
 import { cleanupTempDirectory, copyOutputToCurrentDirectory, createTempDirectory } from './utils/fileUtils.js';
 
-// Enhanced ZIP extraction limits
-const ZIP_SECURITY_LIMITS = {
-  MAX_FILES: 10000, // Maximum number of files in the archive
-  MAX_UNCOMPRESSED_SIZE: 100_000_000, // Maximum total uncompressed size (100MB)
-  MAX_COMPRESSION_RATIO: 100, // Maximum compression ratio to prevent ZIP bombs
-  MAX_PATH_LENGTH: 200, // Maximum file path length
-  MAX_NESTING_LEVEL: 50, // Maximum directory nesting level
-};
-
 /**
  * Process an uploaded ZIP file
  */
@@ -139,7 +130,10 @@ export async function processZipFile(
 }
 
 /**
- * Enhanced ZIP extraction with security checks using fflate
+ * ZIP extraction retaining only the path-traversal (ZipSlip) and duplicate-path
+ * guards. Size, count, ratio, path-length, and nesting-depth checks were dropped
+ * to lift the upload caps; traversal protection is kept because it blocks a real
+ * directory-escape vulnerability, not merely a resource limit.
  */
 async function extractZipWithSecurity(file: File, destPath: string): Promise<void> {
   try {
@@ -155,46 +149,12 @@ async function extractZipWithSecurity(file: File, destPath: string): Promise<voi
     });
 
     const filePaths = Object.keys(files);
-
-    // 1. Check number of files
-    if (filePaths.length > ZIP_SECURITY_LIMITS.MAX_FILES) {
-      throw new AppError(
-        `ZIP contains too many files (${filePaths.length}). Maximum allowed: ${ZIP_SECURITY_LIMITS.MAX_FILES}`,
-        413,
-      );
-    }
-
-    // 2. Calculate total uncompressed size
-    const totalUncompressedSize = Object.values(files).reduce((sum, data) => sum + data.length, 0);
-
-    if (totalUncompressedSize > ZIP_SECURITY_LIMITS.MAX_UNCOMPRESSED_SIZE) {
-      throw new AppError(
-        `Uncompressed size (${(totalUncompressedSize / 1_000_000).toFixed(2)}MB) exceeds maximum limit of ${
-          ZIP_SECURITY_LIMITS.MAX_UNCOMPRESSED_SIZE / 1_000_000
-        }MB`,
-        413,
-      );
-    }
-
-    // 3. Check compression ratio (ZIP bomb detection)
-    if (file.size > 0) {
-      const compressionRatio = totalUncompressedSize / file.size;
-      if (compressionRatio > ZIP_SECURITY_LIMITS.MAX_COMPRESSION_RATIO) {
-        throw new AppError(
-          `Suspicious compression ratio (${compressionRatio.toFixed(2)}:1). Maximum allowed: ${ZIP_SECURITY_LIMITS.MAX_COMPRESSION_RATIO}:1`,
-          400,
-        );
-      }
-    }
-
-    // 4. Validate all entries for path traversal, file extensions, and nesting level
     const processedPaths = new Set<string>();
 
     for (const entryPath of filePaths) {
-      // Skip directories (fflate doesn't include directory entries, only files)
-      if (entryPath.endsWith('/')) continue;
+      if (entryPath.endsWith('/')) continue; // Skip directories
 
-      // 4.1 Check for unsafe paths (directory traversal prevention)
+      // Path traversal (ZipSlip) prevention — reject entries that escape destPath.
       const normalizedPath = path.normalize(path.join(destPath, entryPath));
       if (!normalizedPath.startsWith(destPath)) {
         throw new AppError(
@@ -203,24 +163,7 @@ async function extractZipWithSecurity(file: File, destPath: string): Promise<voi
         );
       }
 
-      // 4.2 Check path length
-      if (entryPath.length > ZIP_SECURITY_LIMITS.MAX_PATH_LENGTH) {
-        throw new AppError(
-          `File path exceeds maximum length: ${entryPath.length} > ${ZIP_SECURITY_LIMITS.MAX_PATH_LENGTH}`,
-          400,
-        );
-      }
-
-      // 4.3 Check nesting level
-      const nestingLevel = entryPath.split('/').length - 1;
-      if (nestingLevel > ZIP_SECURITY_LIMITS.MAX_NESTING_LEVEL) {
-        throw new AppError(
-          `Directory nesting level exceeds maximum: ${nestingLevel} > ${ZIP_SECURITY_LIMITS.MAX_NESTING_LEVEL}`,
-          400,
-        );
-      }
-
-      // 4.4 Check for duplicate paths (could indicate ZipSlip vulnerability attempts)
+      // Duplicate path detection — could indicate a malicious archive.
       if (processedPaths.has(normalizedPath)) {
         throw new AppError(`Duplicate file path detected: ${entryPath}. This could indicate a malicious archive.`, 400);
       }

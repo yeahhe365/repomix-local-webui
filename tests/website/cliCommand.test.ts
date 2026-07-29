@@ -1,5 +1,8 @@
 import { describe, expect, test } from 'vitest';
-import { type CliCommandPackOptions, generateCliCommand } from '../../website/client/local-webui/utils/tryIt/cliCommand.js';
+import {
+  type CliCommandPackOptions,
+  generateCliCommand,
+} from '../../website/client/local-webui/utils/tryIt/cliCommand.js';
 
 const createOptions = (overrides: Partial<CliCommandPackOptions> = {}): CliCommandPackOptions => ({
   format: 'xml',
@@ -40,7 +43,12 @@ describe('generateCliCommand', () => {
     expect(result).toBe('npx repomix --style markdown');
   });
 
-  test('should not add format option when xml (default)', () => {
+  test('should add --style plain for the webui default plain format', () => {
+    const result = generateCliCommand(undefined, createOptions({ format: 'plain' }));
+    expect(result).toBe('npx repomix --style plain');
+  });
+
+  test('should not add format option when xml (repomix native default)', () => {
     const result = generateCliCommand(undefined, createOptions({ format: 'xml' }));
     expect(result).toBe('npx repomix');
   });

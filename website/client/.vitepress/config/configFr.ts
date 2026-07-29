@@ -6,11 +6,6 @@ export const configFr = defineConfig({
   themeConfig: {
     nav: [
       { text: 'Guide', link: '/fr/guide/', activeMatch: '^/fr/guide/' },
-      {
-        text: 'Extension Chrome',
-        link: 'https://chromewebstore.google.com/detail/repomix/fimfamikepjgchehkohedilpdigcpkoa',
-      },
-      { text: 'Rejoindre Discord', link: 'https://discord.gg/wNYzTwZFku' },
     ],
     sidebar: {
       '/fr/guide/': [

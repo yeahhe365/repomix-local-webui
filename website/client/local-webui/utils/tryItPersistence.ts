@@ -92,7 +92,7 @@ export function loadTryItPageState(defaultOptions: PackOptions, storage?: Storag
 
     const parsed = JSON.parse(raw) as Partial<TryItPageState>;
     return {
-      mode: isPersistedInputMode(parsed.mode) ? parsed.mode : 'url',
+      mode: isPersistedInputMode(parsed.mode) ? parsed.mode : 'localPath',
       remoteUrl: typeof parsed.remoteUrl === 'string' ? parsed.remoteUrl : '',
       localPath: typeof parsed.localPath === 'string' ? parsed.localPath : '',
       packOptions: sanitizePackOptions(defaultOptions, parsed.packOptions),
@@ -126,7 +126,7 @@ export function resolveInitialTryItPageState({
   urlParams: Record<string, unknown>;
 }): TryItPageState {
   const baseState: TryItPageState = persistedState ?? {
-    mode: 'url',
+    mode: 'localPath',
     remoteUrl: '',
     localPath: '',
     packOptions: { ...defaultOptions },

@@ -24,7 +24,9 @@ export async function copyToClipboard(content: string, format: string): Promise<
 }
 
 /**
- * Convert repository name to format suitable for filename
+ * Convert repository name to format suitable for filename.
+ * GitHub URLs reduce to `owner-repo`; local paths and file names reduce to
+ * their final path segment so the downloaded file leads with the folder name.
  */
 function formatRepositoryName(repository: string): string {
   // Extract owner and repo from GitHub URL format or use as is
@@ -33,8 +35,9 @@ function formatRepositoryName(repository: string): string {
     const [, owner, repo] = match;
     return `${owner}-${repo}`;
   }
-  // For non-GitHub repositories or local files, clean up the name
-  return repository.replace(/[/\\]/g, '-').replace(/\.git$/, '');
+  // For non-GitHub repositories or local files, use the final path segment as the folder name.
+  const segments = repository.replace(/[\\/]+$/, '').split(/[\\/]/).filter(Boolean);
+  return segments[segments.length - 1] || repository;
 }
 
 /**
@@ -48,7 +51,7 @@ export function downloadResult(content: string, format: string, result: PackResu
 
   const repoName = formatRepositoryName(result.metadata.repository);
   a.href = url;
-  a.download = `repomix-output-${repoName}.${extension}`;
+  a.download = `${repoName}-repomix.${extension}`;
   document.body.appendChild(a);
   a.click();
 
@@ -64,7 +67,7 @@ export async function shareResult(content: string, format: string, result: PackR
   try {
     const repoName = formatRepositoryName(result.metadata.repository);
     const extension = format === 'markdown' ? 'md' : format === 'xml' ? 'xml' : 'txt';
-    const filename = `repomix-output-${repoName}.${extension}`;
+    const filename = `${repoName}-repomix.${extension}`;
 
     const mimeType = format === 'markdown' ? 'text/markdown' : format === 'xml' ? 'application/xml' : 'text/plain';
     const blob = new Blob([content], { type: mimeType });

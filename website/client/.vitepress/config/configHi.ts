@@ -6,11 +6,6 @@ export const configHi = defineConfig({
   themeConfig: {
     nav: [
       { text: 'गाइड', link: '/hi/guide/', activeMatch: '^/hi/guide/' },
-      {
-        text: 'Chrome एक्सटेंशन',
-        link: 'https://chromewebstore.google.com/detail/repomix/fimfamikepjgchehkohedilpdigcpkoa',
-      },
-      { text: 'Discord में शामिल हों', link: 'https://discord.gg/wNYzTwZFku' },
     ],
     sidebar: {
       '/hi/guide/': [

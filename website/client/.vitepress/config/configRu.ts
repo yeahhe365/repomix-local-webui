@@ -6,11 +6,6 @@ export const configRu = defineConfig({
   themeConfig: {
     nav: [
       { text: 'Руководство', link: '/ru/guide/', activeMatch: '^/ru/guide/' },
-      {
-        text: 'Расширение для Chrome',
-        link: 'https://chromewebstore.google.com/detail/repomix/fimfamikepjgchehkohedilpdigcpkoa',
-      },
-      { text: 'Присоединиться к Discord', link: 'https://discord.gg/wNYzTwZFku' },
     ],
     sidebar: {
       '/ru/guide/': [

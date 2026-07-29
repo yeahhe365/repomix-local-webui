@@ -24,23 +24,23 @@ const uiText = useHomeUiText();
 .warning-message {
   display: flex;
   align-items: flex-start;
-  gap: 8px;
-  padding: 12px 16px;
-  background: var(--vp-c-warning-soft);
-  border: 1px solid var(--vp-c-warning);
-  border-radius: 4px;
-  margin-bottom: 8px;
+  gap: var(--amc-space-2, 8px);
+  padding: var(--amc-space-3, 12px) var(--amc-space-4, 16px);
+  background: var(--amc-warning-soft, var(--vp-c-warning-soft));
+  border: 1px solid var(--amc-warning, var(--vp-c-warning));
+  border-radius: var(--amc-radius-sm, 6px);
+  margin-bottom: var(--amc-space-2, 8px);
 }
 
 .warning-icon {
-  font-size: 16px;
+  font-size: var(--amc-text-base, 14px);
   line-height: 1;
   flex-shrink: 0;
 }
 
 .warning-text {
-  font-size: 13px;
-  color: var(--vp-c-text-1);
+  font-size: var(--amc-text-sm, 13px);
+  color: var(--amc-text, var(--vp-c-text-1));
   line-height: 1.4;
 }
 </style>

@@ -6,11 +6,6 @@ export const configZhCn = defineConfig({
   themeConfig: {
     nav: [
       { text: '指南', link: '/zh-cn/guide/', activeMatch: '^/zh-cn/guide/' },
-      {
-        text: 'Chrome 扩展',
-        link: 'https://chromewebstore.google.com/detail/repomix/fimfamikepjgchehkohedilpdigcpkoa',
-      },
-      { text: '加入 Discord', link: 'https://discord.gg/wNYzTwZFku' },
     ],
     sidebar: {
       '/zh-cn/guide/': [

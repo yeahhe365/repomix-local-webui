@@ -6,11 +6,6 @@ export const configZhTw = defineConfig({
   themeConfig: {
     nav: [
       { text: '指南', link: '/zh-tw/guide/', activeMatch: '^/zh-tw/guide/' },
-      {
-        text: 'Chrome擴充功能',
-        link: 'https://chromewebstore.google.com/detail/repomix/fimfamikepjgchehkohedilpdigcpkoa',
-      },
-      { text: '加入 Discord', link: 'https://discord.gg/wNYzTwZFku' },
     ],
     sidebar: {
       '/zh-tw/guide/': [

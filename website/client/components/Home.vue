@@ -1,6 +1,7 @@
 <script setup>
-import Hero from './Home/Hero.vue';
+import Hero from '../local-webui/components/Home/Hero.vue';
 import TryIt from '../local-webui/components/Home/TryIt.vue';
+import '../local-webui/styles/design-tokens.css';
 </script>
 
 <template>
@@ -12,6 +13,6 @@ import TryIt from '../local-webui/components/Home/TryIt.vue';
 
 <style scoped>
 .home {
-  padding-bottom: 60px;
+  padding-bottom: var(--amc-space-5, 40px);
 }
 </style>
