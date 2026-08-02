@@ -1,5 +1,5 @@
-import type { StorageLike } from './tryItPersistence';
 import type { InputMode } from '../types/tryIt';
+import type { StorageLike } from './tryItPersistence';
 
 export type RecentPackMode = Extract<InputMode, 'url' | 'localPath' | 'file'>;
 
@@ -65,7 +65,10 @@ export function deriveRecentPackLabel(mode: RecentPackMode, source: string): str
   }
 
   // Local paths / file names: take the last non-empty path segment.
-  const segments = trimmed.replace(/[\\/]+$/, '').split(/[\\/]/).filter(Boolean);
+  const segments = trimmed
+    .replace(/[\\/]+$/, '')
+    .split(/[\\/]/)
+    .filter(Boolean);
   return segments[segments.length - 1] || trimmed;
 }
 
@@ -95,9 +98,7 @@ function sanitizeRecentPack(candidate: unknown): RecentPack | null {
   const mode = value.mode as RecentPackMode;
   const source = value.source.trim();
   const label =
-    typeof value.label === 'string' && value.label.trim()
-      ? value.label.trim()
-      : deriveRecentPackLabel(mode, source);
+    typeof value.label === 'string' && value.label.trim() ? value.label.trim() : deriveRecentPackLabel(mode, source);
 
   return {
     id: value.id.trim(),
@@ -132,9 +133,7 @@ export function loadRecentPacks(storage?: StorageLike): RecentPack[] {
       return [];
     }
 
-    const packs = parsed
-      .map((item) => sanitizeRecentPack(item))
-      .filter((item): item is RecentPack => item !== null);
+    const packs = parsed.map((item) => sanitizeRecentPack(item)).filter((item): item is RecentPack => item !== null);
 
     return sortRecentPacks(packs).slice(0, MAX_RECENT_PACKS);
   } catch {
@@ -149,9 +148,7 @@ function saveRecentPacks(packs: RecentPack[], storage?: StorageLike): void {
   }
 
   const sanitized = sortRecentPacks(
-    packs
-      .map((item) => sanitizeRecentPack(item))
-      .filter((item): item is RecentPack => item !== null),
+    packs.map((item) => sanitizeRecentPack(item)).filter((item): item is RecentPack => item !== null),
   ).slice(0, MAX_RECENT_PACKS);
 
   resolvedStorage.setItem(TRY_IT_RECENT_PACKS_KEY, JSON.stringify(sanitized));
@@ -162,11 +159,7 @@ function saveRecentPacks(packs: RecentPack[], storage?: StorageLike): void {
  * an existing match moves to the top and is updated with the latest patterns.
  * The list is capped at MAX_RECENT_PACKS entries.
  */
-export function upsertRecentPack(
-  input: RecentPackInput,
-  storage?: StorageLike,
-  now = Date.now(),
-): RecentPack[] {
+export function upsertRecentPack(input: RecentPackInput, storage?: StorageLike, now = Date.now()): RecentPack[] {
   const source = normalizeSource(input.mode, input.source);
   if (!source) {
     return loadRecentPacks(storage);

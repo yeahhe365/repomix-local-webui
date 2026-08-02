@@ -53,14 +53,21 @@
           <thead>
             <tr>
               <th class="checkbox-column">
-                <input
-                  type="checkbox"
-                  :checked="selectedFiles.length === allFiles.length && allFiles.length > 0"
-                  :indeterminate="selectedFiles.length > 0 && selectedFiles.length < allFiles.length"
-                  @change="($event.target as HTMLInputElement).checked ? selectAll() : deselectAll()"
-                  class="header-checkbox"
-                  :aria-label="uiText.fileSelection.toggleAllFilesAria"
-                />
+                <label class="checkbox-label">
+                  <input
+                    type="checkbox"
+                    :checked="selectedFiles.length === allFiles.length && allFiles.length > 0"
+                    :indeterminate="selectedFiles.length > 0 && selectedFiles.length < allFiles.length"
+                    @change="($event.target as HTMLInputElement).checked ? selectAll() : deselectAll()"
+                    class="header-checkbox"
+                    :aria-label="uiText.fileSelection.toggleAllFilesAria"
+                  />
+                  <span class="checkbox-box" aria-hidden="true">
+                    <svg class="checkbox-mark" viewBox="0 0 10 8" fill="none" aria-hidden="true">
+                      <path d="M1 4.2 3.6 6.8 9 1.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </span>
+                </label>
               </th>
               <th class="file-path-column">{{ uiText.fileSelection.filePath }}</th>
               <th class="chars-column">{{ uiText.fileSelection.chars }}</th>
@@ -75,12 +82,19 @@
               @click="toggleFileSelection(file, $event)"
             >
               <td class="checkbox-cell">
-                <input
-                  type="checkbox"
-                  v-model="file.selected"
-                  class="file-checkbox"
-                  :aria-label="uiText.fileSelection.selectFileAria(file.path)"
-                />
+                <label class="checkbox-label">
+                  <input
+                    type="checkbox"
+                    v-model="file.selected"
+                    class="file-checkbox"
+                    :aria-label="uiText.fileSelection.selectFileAria(file.path)"
+                  />
+                  <span class="checkbox-box" aria-hidden="true">
+                    <svg class="checkbox-mark" viewBox="0 0 10 8" fill="none" aria-hidden="true">
+                      <path d="M1 4.2 3.6 6.8 9 1.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </span>
+                </label>
               </td>
               <td class="file-path-cell">
                 <span class="file-path">{{ file.path }}</span>

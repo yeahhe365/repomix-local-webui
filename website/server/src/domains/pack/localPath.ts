@@ -35,6 +35,10 @@ async function resolveRealAllowlistRoots(allowlistRoots: string[]): Promise<stri
   );
 }
 
+function formatAllowedRoots(allowlistRoots: string[]): string {
+  return allowlistRoots.join(', ');
+}
+
 export async function validateAndResolveLocalPath(localPath: string): Promise<string> {
   if (!isLocalPathModeEnabled()) {
     throw new AppError('Local path mode is disabled.', 403);
@@ -52,11 +56,29 @@ export async function validateAndResolveLocalPath(localPath: string): Promise<st
   const resolvedPath = path.resolve(trimmedPath);
   const allowlistRoots = assertLocalPathAllowlistConfigured('access');
 
+  // Preliminary lexical allowlist check, performed before stat().
+  // A path that is not within any allowlist root can never be valid (realpath
+  // would only move it further away), so we reject it here. This gives a clear
+  // "outside the allowed directories" error instead of a misleading
+  // "does not exist" when the target volume simply isn't mounted in the server.
+  if (!allowlistRoots.some((rootPath) => isPathWithinRoot(resolvedPath, rootPath))) {
+    throw new AppError(
+      `Local path is outside the allowed directories. Allowed roots: ${formatAllowedRoots(allowlistRoots)}`,
+      403,
+    );
+  }
+
   let stats: Awaited<ReturnType<typeof fs.stat>>;
   try {
     stats = await fs.stat(resolvedPath);
   } catch {
-    throw new AppError('Local path does not exist.', 404);
+    // The path is within an allowlist root but cannot be stat'd. In a Docker
+    // deployment this almost always means the path exists on the host but is
+    // not bind-mounted into the container.
+    throw new AppError(
+      'Local path does not exist on the server. If the server runs in Docker, verify this path is bind-mounted.',
+      404,
+    );
   }
 
   if (!stats.isDirectory()) {
@@ -67,7 +89,10 @@ export async function validateAndResolveLocalPath(localPath: string): Promise<st
   const realAllowlistRoots = await resolveRealAllowlistRoots(allowlistRoots);
 
   if (!realAllowlistRoots.some((rootPath) => isPathWithinRoot(realPath, rootPath))) {
-    throw new AppError('Local path is outside the allowed directories.', 403);
+    throw new AppError(
+      `Local path is outside the allowed directories. Allowed roots: ${formatAllowedRoots(allowlistRoots)}`,
+      403,
+    );
   }
 
   return resolvedPath;

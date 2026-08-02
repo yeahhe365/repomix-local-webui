@@ -20,25 +20,26 @@ const uiText = useHomeUiText();
 <style scoped>
 .hero {
   text-align: center;
-  padding: var(--amc-space-3, 12px) var(--amc-space-5, 20px) var(--amc-space-2, 8px);
+  padding: var(--amc-space-6, 24px) var(--amc-space-5, 20px) var(--amc-space-5, 20px);
   max-width: 960px;
   margin: 0 auto;
 }
 
 .hero-title {
-  font-size: 32px;
-  font-weight: 700;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
-  margin: 0 0 var(--amc-space-2, 8px);
+  font-size: 44px;
+  font-weight: 750;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin: 0 0 var(--amc-space-3, 12px);
   color: var(--vp-c-text-1);
 }
 
 .hero-description {
+  max-width: 560px;
+  margin: 0 auto;
   font-size: var(--amc-text-lg, 16px);
   font-weight: 500;
-  line-height: 1.5;
-  margin: 0;
+  line-height: 1.55;
   color: var(--vp-c-text-2);
 }
 
@@ -49,11 +50,7 @@ const uiText = useHomeUiText();
 
 @media (max-width: 768px) {
   .hero-title {
-    font-size: 28px;
-  }
-
-  .hero-description {
-    font-size: 15px;
+    font-size: 34px;
   }
 }
 </style>

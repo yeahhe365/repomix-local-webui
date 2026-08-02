@@ -24,9 +24,12 @@ export interface HomeUiText {
     onlyMobile: string;
     runLocally: string;
     copyCliCommand: string;
+    fullscreen: string;
+    exitFullscreen: string;
     clear: string;
     moreActions: string;
     submitHint: string;
+    submitHintDownload: string;
     downloadStarted: string;
   };
   options: {
@@ -99,6 +102,10 @@ export interface HomeUiText {
     localPathBrowserKeyboardHint: string;
     localPathBrowserSearchPlaceholder: string;
     localPathBrowserRecentTitle: string;
+	    breadcrumbEditAria: string;
+	    pathDirectPlaceholder: string;
+	    pathDirectApplyAria: string;
+	    pathDirectCancelAria: string;
     fileSelectionWarning: (threshold: number) => string;
     modeLabels: {
       url: string;
@@ -131,9 +138,6 @@ export interface HomeUiText {
   loading: {
     title: string;
     stages: Record<string, string>;
-    sponsorHeader: string;
-    sponsorTitle: string;
-    sponsorSubtitle: string;
     filesProgress: (done: number, total: number) => string;
   };
   result: {
@@ -215,7 +219,15 @@ export interface HomeUiText {
     ignoreLabel: string;
     includeLabel: string;
     applyAria: (name: string) => string;
+    editAria: (name: string) => string;
     deleteAria: (name: string) => string;
+    manage: string;
+    manageAria: string;
+    managerTitle: string;
+    managerSearchPlaceholder: string;
+    managerDragHint: string;
+    managerDone: string;
+    managerEmpty: string;
   };
   toast: {
     packSuccessTitle: string;
@@ -256,9 +268,12 @@ const enText: HomeUiText = {
     onlyMobile: 'Only available on mobile devices',
     runLocally: 'Run locally:',
     copyCliCommand: 'Copy CLI command',
+    fullscreen: 'Fullscreen',
+    exitFullscreen: 'Exit fullscreen',
     clear: 'Clear',
     moreActions: 'More actions',
     submitHint: 'Ctrl+Enter to pack',
+    submitHintDownload: 'Ctrl+Shift+Enter to pack & download',
     downloadStarted: 'Download started',
   },
   options: {
@@ -333,6 +348,10 @@ const enText: HomeUiText = {
     localPathBrowserKeyboardHint: 'Use arrow keys to move, Enter to open, Backspace to go up, Esc to close',
     localPathBrowserSearchPlaceholder: 'Search folders in the current directory',
     localPathBrowserRecentTitle: 'Recent',
+    breadcrumbEditAria: 'Enter a path directly',
+    pathDirectPlaceholder: 'Type an absolute path and press Enter, e.g. /Users/jones/Code',
+    pathDirectApplyAria: 'Go to path',
+    pathDirectCancelAria: 'Cancel path input',
     fileSelectionWarning: (threshold) =>
       `Selecting more than ${threshold} files may cause processing issues or timeouts. Consider reducing your selection for better performance.`,
     modeLabels: {
@@ -373,9 +392,6 @@ const enText: HomeUiText = {
       extracting: 'Extracting files...',
       processing: 'Processing files...',
     },
-    sponsorHeader: 'Special thanks to:',
-    sponsorTitle: 'Warp, built for coding with multiple AI agents',
-    sponsorSubtitle: 'Available for MacOS, Linux, & Windows',
     filesProgress: (done, total) => `Processed ${done}/${total} files`,
   },
   result: {
@@ -458,7 +474,15 @@ const enText: HomeUiText = {
     ignoreLabel: 'Ignore',
     includeLabel: 'Include',
     applyAria: (name) => `Apply preset ${name}`,
+    editAria: (name) => `Rename preset ${name}`,
     deleteAria: (name) => `Delete preset ${name}`,
+    manage: 'Manage presets',
+    manageAria: 'Open preset manager',
+    managerTitle: 'Manage Presets',
+    managerSearchPlaceholder: 'Search presets...',
+    managerDragHint: 'Drag to reorder or use the arrow buttons',
+    managerDone: 'Done',
+    managerEmpty: 'No presets saved yet.',
   },
   toast: {
     packSuccessTitle: 'Pack finished',
@@ -499,9 +523,12 @@ const zhText: HomeUiText = {
     onlyMobile: '仅支持移动设备',
     runLocally: '本地运行：',
     copyCliCommand: '复制本地命令',
+    fullscreen: '全屏',
+    exitFullscreen: '退出全屏',
     clear: '清空',
     moreActions: '更多操作',
     submitHint: 'Ctrl+Enter 提交',
+    submitHintDownload: 'Ctrl+Shift+Enter 打包并下载',
     downloadStarted: '已开始下载',
   },
   options: {
@@ -574,6 +601,10 @@ const zhText: HomeUiText = {
     localPathBrowserKeyboardHint: '方向键选择，回车进入，退格返回，Esc 关闭',
     localPathBrowserSearchPlaceholder: '搜索当前目录中的文件夹',
     localPathBrowserRecentTitle: '最近访问',
+    breadcrumbEditAria: '直接输入路径',
+    pathDirectPlaceholder: '输入绝对路径后回车，如 /Users/jones/Code',
+    pathDirectApplyAria: '跳转到该路径',
+    pathDirectCancelAria: '取消输入',
     fileSelectionWarning: (threshold) =>
       `选择超过 ${threshold} 个文件可能导致处理问题或超时。建议减少选择范围以获得更好的性能。`,
     modeLabels: {
@@ -614,9 +645,6 @@ const zhText: HomeUiText = {
       extracting: '正在解压文件...',
       processing: '正在处理文件...',
     },
-    sponsorHeader: '特别鸣谢：',
-    sponsorTitle: 'Warp，专为多 AI agent 编码打造',
-    sponsorSubtitle: '支持 macOS、Linux 和 Windows',
     filesProgress: (done, total) => `已处理 ${done}/${total} 个文件`,
   },
   result: {
@@ -698,7 +726,15 @@ const zhText: HomeUiText = {
     ignoreLabel: '忽略',
     includeLabel: '包含',
     applyAria: (name) => `应用预设 ${name}`,
+    editAria: (name) => `重命名预设 ${name}`,
     deleteAria: (name) => `删除预设 ${name}`,
+    manage: '管理预设',
+    manageAria: '打开预设管理',
+    managerTitle: '管理预设',
+    managerSearchPlaceholder: '搜索预设...',
+    managerDragHint: '拖拽或使用箭头按钮排序',
+    managerDone: '完成',
+    managerEmpty: '还没有保存的预设。',
   },
   toast: {
     packSuccessTitle: '打包完成',

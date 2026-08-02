@@ -7,6 +7,7 @@ import {
   processLocalPath,
   validateAndResolveLocalPath,
 } from '../../../website/server/src/domains/pack/localPath.js';
+import { AppError } from '../../../website/server/src/utils/errorHandler.js';
 
 describe('localPath mode', () => {
   const originalEnable = process.env.ENABLE_LOCAL_PATH_MODE;
@@ -91,12 +92,55 @@ describe('localPath mode', () => {
       await fs.symlink(outsideRoot, symlinkPath, process.platform === 'win32' ? 'junction' : 'dir');
 
       await expect(validateAndResolveLocalPath(symlinkPath)).rejects.toMatchObject({
-        message: 'Local path is outside the allowed directories.',
         statusCode: 403,
       });
+      const error = await validateAndResolveLocalPath(symlinkPath).catch((err) => err);
+      expect(error.message).toContain('Local path is outside the allowed directories.');
+      expect(error.message).toContain('Allowed roots:');
+      expect(error.message).toContain(tempRoot);
     } finally {
       await fs.rm(tempRoot, { recursive: true, force: true });
       await fs.rm(outsideRoot, { recursive: true, force: true });
+    }
+  });
+
+  it('rejects a path outside the allowlist roots with a clear message before stat', async () => {
+    process.env.ENABLE_LOCAL_PATH_MODE = 'true';
+
+    const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'repomix-local-root-'));
+    const outsidePath = path.join(os.tmpdir(), 'repomix-totally-outside-' + Date.now());
+    process.env.LOCAL_PATH_ALLOWLIST = tempRoot;
+
+    try {
+      const error = await validateAndResolveLocalPath(outsidePath).catch((err) => err);
+      expect(error).toBeInstanceOf(AppError);
+      expect(error.statusCode).toBe(403);
+      // The lexical check fires before stat, so we get the allowlist message
+      // rather than a misleading "does not exist".
+      expect(error.message).toContain('Local path is outside the allowed directories.');
+      expect(error.message).toContain(tempRoot);
+    } finally {
+      await fs.rm(tempRoot, { recursive: true, force: true });
+    }
+  });
+
+  it('reports a Docker-mount hint when an allowlisted path cannot be stat\'d', async () => {
+    process.env.ENABLE_LOCAL_PATH_MODE = 'true';
+
+    const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'repomix-local-root-'));
+    // A path that is lexically within the allowlist root but does not exist
+    // on disk (simulates an unmounted bind target in Docker).
+    const missingPath = path.join(tempRoot, 'never-created-subdir');
+    process.env.LOCAL_PATH_ALLOWLIST = tempRoot;
+
+    try {
+      const error = await validateAndResolveLocalPath(missingPath).catch((err) => err);
+      expect(error).toBeInstanceOf(AppError);
+      expect(error.statusCode).toBe(404);
+      expect(error.message).toContain('Local path does not exist on the server.');
+      expect(error.message).toContain('Docker');
+    } finally {
+      await fs.rm(tempRoot, { recursive: true, force: true });
     }
   });
 

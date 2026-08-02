@@ -1,6 +1,7 @@
 import type { Ace } from 'ace-builds';
 import type { PackResult } from '../../types/api';
 import { analyticsUtils } from './analytics';
+import { isValidAbsolutePath } from './localPathInput';
 
 /**
  * Format timestamp to locale string
@@ -25,17 +26,26 @@ export async function copyToClipboard(content: string, format: string): Promise<
 
 /**
  * Convert repository name to format suitable for filename.
- * GitHub URLs reduce to `owner-repo`; local paths and file names reduce to
- * their final path segment so the downloaded file leads with the folder name.
+ *
+ * Three-way branching by input type:
+ * - absolute local path (e.g. /Users/…/MyProject) → last segment only (MyProject)
+ * - GitHub URL or owner/repo shorthand → owner-repo
+ * - anything else (ZIP filename, etc.) → last segment
  */
-function formatRepositoryName(repository: string): string {
-  // Extract owner and repo from GitHub URL format or use as is
-  const match = repository.match(/(?:https:\/\/github\.com\/)?([^/]+)\/([^/]+)(?:\.git)?$/);
-  if (match) {
-    const [, owner, repo] = match;
-    return `${owner}-${repo}`;
+export function formatRepositoryName(repository: string): string {
+  // 1. Absolute local paths: take the final path segment, stripping trailing slashes.
+  if (isValidAbsolutePath(repository)) {
+    const segments = repository.replace(/[\\/]+$/, '').split(/[\\/]/).filter(Boolean);
+    return segments[segments.length - 1] || repository;
   }
-  // For non-GitHub repositories or local files, use the final path segment as the folder name.
+
+  // 2. GitHub URL (with optional .git, /tree/branch etc.) or owner/repo shorthand.
+  const githubMatch = repository.match(/^(?:https:\/\/github\.com\/)?([^/]+)\/([^/?#]+?)(?:\.git)?(?:[/?#]|$)/i);
+  if (githubMatch) {
+    return `${githubMatch[1]}-${githubMatch[2]}`;
+  }
+
+  // 3. Fallback (e.g. ZIP filenames, plain strings): last segment.
   const segments = repository.replace(/[\\/]+$/, '').split(/[\\/]/).filter(Boolean);
   return segments[segments.length - 1] || repository;
 }

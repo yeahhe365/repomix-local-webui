@@ -20,10 +20,18 @@ function createTooDeepError(maxDepth: number, messages?: DirectoryCollectionMess
 }
 
 function createTooManyFilesError(maxFiles: number, messages?: DirectoryCollectionMessages): Error {
-  return new Error(messages?.tooManyFiles?.(maxFiles) || `Too many files in directory structure (max files: ${maxFiles})`);
+  return new Error(
+    messages?.tooManyFiles?.(maxFiles) || `Too many files in directory structure (max files: ${maxFiles})`,
+  );
 }
 
-function assertCollectionLimits(depth: number, fileCount: { current: number }, maxDepth: number, maxFiles: number, messages?: DirectoryCollectionMessages) {
+function assertCollectionLimits(
+  depth: number,
+  fileCount: { current: number },
+  maxDepth: number,
+  maxFiles: number,
+  messages?: DirectoryCollectionMessages,
+) {
   if (depth > maxDepth) {
     throw createTooDeepError(maxDepth, messages);
   }
@@ -32,7 +40,13 @@ function assertCollectionLimits(depth: number, fileCount: { current: number }, m
   }
 }
 
-function readFileEntry(entry: FileSystemEntry, path: string, fileCount: { current: number }, maxFiles: number, messages?: DirectoryCollectionMessages) {
+function readFileEntry(
+  entry: FileSystemEntry,
+  path: string,
+  fileCount: { current: number },
+  maxFiles: number,
+  messages?: DirectoryCollectionMessages,
+) {
   return new Promise<File[]>((resolve, reject) => {
     (entry as FileSystemFileEntry).file((file: File) => {
       if (fileCount.current >= maxFiles) {
@@ -56,7 +70,10 @@ function readFileEntry(entry: FileSystemEntry, path: string, fileCount: { curren
   });
 }
 
-export async function collectFilesFromEntry(entry: FileSystemEntry, options: CollectFilesOptions = {}): Promise<File[]> {
+export async function collectFilesFromEntry(
+  entry: FileSystemEntry,
+  options: CollectFilesOptions = {},
+): Promise<File[]> {
   const path = options.path ?? '';
   const depth = options.depth ?? 0;
   const fileCount = options.fileCount ?? { current: 0 };

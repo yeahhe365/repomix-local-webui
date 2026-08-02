@@ -27,7 +27,8 @@ services:
       - "127.0.0.1:8787:8787"
     environment:
       - ENABLE_LOCAL_PATH_MODE=true
-      - LOCAL_PATH_ALLOWLIST=/Users,/Volumes/WD_BLACK
+      - LOCAL_PATH_ALLOWLIST=/Users,/Volumes/WD_BLACK,/Volumes/emby
     volumes:
       - /Users:/Users:ro
       - /Volumes/WD_BLACK:/Volumes/WD_BLACK:ro
+      - /Volumes/emby:/Volumes/emby:ro

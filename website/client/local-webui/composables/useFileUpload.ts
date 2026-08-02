@@ -55,10 +55,7 @@ export function useFileUpload(config: FileUploadConfig) {
   }
 
   // Validate and process files
-  async function processFiles(
-    files: File[],
-    folderName?: string,
-  ): Promise<FileUploadResult> {
+  async function processFiles(files: File[], folderName?: string): Promise<FileUploadResult> {
     clearError();
     isProcessing.value = true;
 
@@ -114,9 +111,7 @@ export function useFileUpload(config: FileUploadConfig) {
   }
 
   // Handle file input selection
-  async function handleFileSelect(
-    files: FileList | null,
-  ): Promise<FileUploadResult> {
+  async function handleFileSelect(files: FileList | null): Promise<FileUploadResult> {
     if (!files || files.length === 0) {
       return { success: false, error: config.messages?.noFilesSelected || 'No files selected' };
     }

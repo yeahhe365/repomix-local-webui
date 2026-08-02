@@ -95,5 +95,28 @@ describe('local-webui homeUiText new UI keys', () => {
     expect(zh.options.accordion.summary('XML', 2)).toBe('XML · 2 项自定义');
     expect(zh.loading.filesProgress(3, 10)).toBe('已处理 3/10 个文件');
   });
+
+  it('exposes fullscreen action labels in both locales', () => {
+    expect(getHomeUiText('en-US').actions.fullscreen).toBe('Fullscreen');
+    expect(getHomeUiText('en-US').actions.exitFullscreen).toBe('Exit fullscreen');
+    expect(getHomeUiText('zh-CN').actions.fullscreen).toBe('全屏');
+    expect(getHomeUiText('zh-CN').actions.exitFullscreen).toBe('退出全屏');
+  });
+
+  it('exposes breadcrumb edit UI text keys in both locales', () => {
+    expect(getHomeUiText('en-US').upload.breadcrumbEditAria).toBe('Enter a path directly');
+    expect(getHomeUiText('en-US').upload.pathDirectPlaceholder).toBe('Type an absolute path and press Enter, e.g. /Users/jones/Code');
+    expect(getHomeUiText('en-US').upload.pathDirectApplyAria).toBe('Go to path');
+    expect(getHomeUiText('en-US').upload.pathDirectCancelAria).toBe('Cancel path input');
+    expect(getHomeUiText('zh-CN').upload.breadcrumbEditAria).toBe('直接输入路径');
+    expect(getHomeUiText('zh-CN').upload.pathDirectPlaceholder).toBe('输入绝对路径后回车，如 /Users/jones/Code');
+    expect(getHomeUiText('zh-CN').upload.pathDirectApplyAria).toBe('跳转到该路径');
+    expect(getHomeUiText('zh-CN').upload.pathDirectCancelAria).toBe('取消输入');
+  });
+
+  it('exposes submitHintDownload in both locales', () => {
+    expect(getHomeUiText('en-US').actions.submitHintDownload).toBe('Ctrl+Shift+Enter to pack & download');
+    expect(getHomeUiText('zh-CN').actions.submitHintDownload).toBe('Ctrl+Shift+Enter 打包并下载');
+  });
 });
 

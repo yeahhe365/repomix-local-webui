@@ -22,6 +22,11 @@
   order: 1;
 }
 
+/* Local search disabled: hide the empty search slot VitePress still renders. */
+.VPNavBarSearch {
+  display: none !important;
+}
+
 .hero-description__accent {
   color: var(--vp-c-brand-1);
 }

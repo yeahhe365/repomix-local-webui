@@ -3,19 +3,6 @@ import { type ManifestOptions, VitePWA } from 'vite-plugin-pwa';
 import { defineConfig } from 'vitepress';
 import llmstxt from 'vitepress-plugin-llms';
 import { FORK_REPOSITORY_URL, NPM_PACKAGE_URL } from '../../shared/projectLinks';
-import { configDeSearch } from './configDe';
-import { configEsSearch } from './configEs';
-import { configHiSearch } from './configHi';
-import { configIdSearch } from './configId';
-import { configItSearch } from './configIt';
-import { configJaSearch } from './configJa';
-import { configKoSearch } from './configKo';
-import { configPtBrSearch } from './configPtBr';
-import { configRuSearch } from './configRu';
-import { configTrSearch } from './configTr';
-import { configViSearch } from './configVi';
-import { configZhCnSearch } from './configZhCn';
-import { configZhTwSearch } from './configZhTw';
 
 // Site Metadata
 const siteName = 'Repomix';
@@ -121,26 +108,6 @@ export const configShard = defineConfig({
   // Shared configuration
   themeConfig: {
     logo: { src: '/images/repomix-logo.svg', width: 24, height: 24 },
-    search: {
-      provider: 'local',
-      options: {
-        locales: {
-          ...configDeSearch,
-          ...configEsSearch,
-          ...configHiSearch,
-          ...configIdSearch,
-          ...configItSearch,
-          ...configJaSearch,
-          ...configKoSearch,
-          ...configPtBrSearch,
-          ...configRuSearch,
-          ...configTrSearch,
-          ...configViSearch,
-          ...configZhCnSearch,
-          ...configZhTwSearch,
-        },
-      },
-    },
     socialLinks: [
       { icon: 'x', link: 'https://x.com/repomix_ai' },
       { icon: 'discord', link: 'https://discord.gg/wNYzTwZFku' },

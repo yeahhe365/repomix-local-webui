@@ -3,7 +3,7 @@ import ace, { type Ace } from 'ace-builds';
 import themeTomorrowUrl from 'ace-builds/src-noconflict/theme-tomorrow?url';
 import themeTomorrowNightUrl from 'ace-builds/src-noconflict/theme-tomorrow_night?url';
 import { useData } from 'vitepress';
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { VAceEditor } from 'vue3-ace-editor';
 import type { PackResult } from '../../types/api';
 import type { PackOptions } from '../../types/pack';
@@ -40,22 +40,43 @@ watch(isDark, (newIsDark) => {
 const handleEditorMount = (editor: Ace.Editor) => {
   editorInstance.value = editor;
 };
+
+// Fullscreen toggle for the result panel. Esc exits; the floating toolbar holds the trigger.
+const fullscreen = ref(false);
+const toggleFullscreen = () => {
+  fullscreen.value = !fullscreen.value;
+};
+const handleEscape = (event: KeyboardEvent) => {
+  if (event.key === 'Escape' && fullscreen.value) {
+    fullscreen.value = false;
+  }
+};
+onMounted(() => window.addEventListener('keydown', handleEscape));
+onUnmounted(() => window.removeEventListener('keydown', handleEscape));
 </script>
 
 <template>
   <div class="content-wrapper">
-    <TryItResultSummaryBar :result="result" />
+    <div class="result-body" :class="{ 'result-body--fullscreen': fullscreen }">
+      <TryItResultSummaryBar :result="result" />
 
-    <div class="output-panel">
-      <TryItOutputActions :result="result" :pack-options="packOptions" variant="floating" />
-      <div class="editor-container">
-        <VAceEditor
-          v-model:value="result.content"
-          :lang="'text'"
-          :style="{ height: '100%', width: '100%' }"
-          :options="editorOptions"
-          @mount="handleEditorMount"
+      <div class="output-panel">
+        <TryItOutputActions
+          :result="result"
+          :pack-options="packOptions"
+          variant="floating"
+          :fullscreen="fullscreen"
+          @toggle-fullscreen="toggleFullscreen"
         />
+        <div class="editor-container">
+          <VAceEditor
+            v-model:value="result.content"
+            :lang="'text'"
+            :style="{ height: '100%', width: '100%' }"
+            :options="editorOptions"
+            @mount="handleEditorMount"
+          />
+        </div>
       </div>
     </div>
 
@@ -71,18 +92,39 @@ const handleEditorMount = (editor: Ace.Editor) => {
   flex-direction: column;
 }
 
+.result-body {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Fullscreen overlay: covers the page but stays below toasts (z-index 100) and the
+ * local-path browser (z-index 1000). The summary bar is retained for repo context. */
+.result-body--fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: var(--amc-surface, var(--vp-c-bg));
+}
+
 .output-panel {
   position: relative;
   display: flex;
   flex-direction: column;
-  height: 100%;
-  max-height: 500px;
+  height: min(68vh, 760px);
+  min-height: 320px;
   background: var(--amc-surface, var(--vp-c-bg));
   overflow: hidden;
 }
 
+.result-body--fullscreen .output-panel {
+  flex: 1;
+  height: auto;
+  min-height: 0;
+}
+
 .editor-container {
-  height: 100%;
+  flex: 1;
+  min-height: 0;
   width: 100%;
   font-family: var(--amc-font-mono, var(--vp-font-family-mono));
 }
@@ -93,7 +135,7 @@ const handleEditorMount = (editor: Ace.Editor) => {
 
 @media (max-width: 768px) {
   .output-panel {
-    height: 500px;
+    height: min(60vh, 560px);
   }
 }
 </style>

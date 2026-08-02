@@ -15,7 +15,6 @@ const uiText = useHomeUiText();
 
 <template>
   <div class="option-section">
-    <p class="option-label">{{ uiText.options.outputFormat }}</p>
     <div class="format-buttons">
       <button class="format-button" :class="{ active: format === 'xml' }" @click="emit('update:format', 'xml')" type="button">
         {{ uiText.options.formatNames.xml }}
@@ -44,15 +43,7 @@ const uiText = useHomeUiText();
 .option-section {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-}
-
-.option-label {
-  font-size: var(--amc-text-sm, 13px);
-  font-weight: 500;
-  margin: 0;
-  color: var(--amc-text-muted, var(--vp-c-text-2));
-  padding-bottom: var(--amc-space-1, 4px);
+  gap: var(--amc-space-2, 8px);
 }
 
 .format-buttons {

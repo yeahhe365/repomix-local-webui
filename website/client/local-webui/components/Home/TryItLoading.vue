@@ -22,13 +22,7 @@ const stageMessages: Record<PackProgressStage, string> = {
   processing: uiText.value.loading.stages.processing,
 };
 
-const STAGE_ORDER: PackProgressStage[] = [
-  'cache-check',
-  'cloning',
-  'repository-fetch',
-  'extracting',
-  'processing',
-];
+const STAGE_ORDER: PackProgressStage[] = ['cache-check', 'cloning', 'repository-fetch', 'extracting', 'processing'];
 
 const MAX_DETAIL_LENGTH = 60;
 
@@ -70,22 +64,6 @@ const fileProgress = computed<{ done: number; total: number } | null>(() => {
     <p v-if="fileProgress" class="loading-files">
       {{ uiText.loading.filesProgress(fileProgress.done, fileProgress.total) }}
     </p>
-    <div class="sponsor-section">
-      <p class="sponsor-header">{{ uiText.loading.sponsorHeader }}</p>
-      <a href="https://go.warp.dev/repomix" target="_blank" rel="noopener noreferrer">
-        <img alt="Warp sponsorship" width="400" src="https://raw.githubusercontent.com/warpdotdev/brand-assets/main/Github/Sponsor/Warp-Github-LG-01.png">
-      </a>
-      <p class="sponsor-title">
-        <a href="https://go.warp.dev/repomix" target="_blank" rel="noopener noreferrer">
-          {{ uiText.loading.sponsorTitle }}
-        </a>
-      </p>
-      <p class="sponsor-subtitle">
-        <a href="https://go.warp.dev/repomix" target="_blank" rel="noopener noreferrer">
-          {{ uiText.loading.sponsorSubtitle }}
-        </a>
-      </p>
-    </div>
   </div>
 </template>
 
@@ -149,41 +127,6 @@ const fileProgress = computed<{ done: number; total: number } | null>(() => {
   border-radius: 50%;
   border-top-color: transparent;
   animation: spin 1s linear infinite;
-}
-
-.sponsor-section {
-  margin-top: var(--amc-space-4, 16px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.sponsor-section p {
-  margin: var(--amc-space-2, 8px) 0;
-}
-
-.sponsor-section .sponsor-header {
-  font-size: var(--amc-text-sm, 13px);
-  color: var(--amc-text-muted, var(--vp-c-text-2));
-}
-
-.sponsor-section img {
-  max-width: 100%;
-  height: auto;
-  margin: var(--amc-space-3, 12px) 0;
-}
-
-.sponsor-section .sponsor-title {
-  font-weight: 600;
-  font-size: var(--amc-text-base, 14px);
-  color: var(--amc-accent, var(--vp-c-brand-1));
-  text-decoration: underline;
-}
-
-.sponsor-section .sponsor-subtitle {
-  font-size: var(--amc-text-sm, 13px);
-  color: var(--amc-accent, var(--vp-c-brand-1));
-  text-decoration: underline;
 }
 
 @keyframes spin {

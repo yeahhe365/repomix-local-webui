@@ -3,6 +3,7 @@ import {
   buildLocalPathBreadcrumbs,
   filterLocalPathEntries,
   moveLocalPathSelection,
+  normalizeDirectPathInput,
   pushRecentLocalPath,
 } from '../../website/client/local-webui/utils/tryIt/localPathBrowserNavigation.js';
 
@@ -58,5 +59,17 @@ describe('localPathBrowserNavigation', () => {
         3,
       ),
     ).toEqual(['/Users/jones/Desktop', '/Users/jones/Documents', '/Users/jones/Downloads']);
+  });
+
+  it('normalizeDirectPathInput returns the trimmed path for a valid POSIX absolute path', () => {
+    expect(normalizeDirectPathInput('/Users/jones/Code')).toBe('/Users/jones/Code');
+  });
+
+  it('normalizeDirectPathInput returns the trimmed path for a valid Windows absolute path', () => {
+    expect(normalizeDirectPathInput('C:\\Users\\jones\\Code')).toBe('C:\\Users\\jones\\Code');
+  });
+
+  it('normalizeDirectPathInput returns null for a relative path', () => {
+    expect(normalizeDirectPathInput('relative/path')).toBeNull();
   });
 });

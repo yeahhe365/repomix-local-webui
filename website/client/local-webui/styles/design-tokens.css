@@ -20,6 +20,7 @@
   --amc-bg-alt: var(--vp-c-bg-alt);
   --amc-surface: var(--vp-c-bg);
   --amc-surface-muted: var(--vp-c-bg-soft);
+  --amc-surface-raised: var(--vp-c-bg-elv);
   --amc-border: var(--vp-c-border);
   --amc-border-soft: var(--vp-c-divider);
   --amc-border-strong: var(--vp-c-border);
@@ -142,6 +143,10 @@
 .amc-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.amc-btn:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
 /* Primary — accent fill, the only orange button on the page. */

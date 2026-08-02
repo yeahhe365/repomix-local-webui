@@ -74,6 +74,10 @@ function handleClick(event: MouseEvent) {
   cursor: not-allowed;
 }
 
+.pack-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
 .pack-button__text {
   transition: opacity var(--amc-transition-slow, 0.2s ease);
 }

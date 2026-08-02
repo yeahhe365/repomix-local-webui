@@ -1,3 +1,5 @@
+import { isValidAbsolutePath } from './localPathInput.js';
+
 export interface LocalPathBreadcrumb {
   label: string;
   path: string;
@@ -57,4 +59,10 @@ export function pushRecentLocalPath(recentPaths: string[], path: string, limit =
 
   const nextPaths = [trimmedPath, ...recentPaths.filter((recentPath) => recentPath !== trimmedPath)];
   return nextPaths.slice(0, limit);
+}
+
+export function normalizeDirectPathInput(value: string): string | null {
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  return isValidAbsolutePath(trimmed) ? trimmed : null;
 }

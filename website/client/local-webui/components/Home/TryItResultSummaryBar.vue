@@ -19,12 +19,21 @@ const formatLabel = computed(
 );
 
 const formattedTime = computed(() => formatTimestamp(props.result.metadata.timestamp));
+
+// Long local paths are unreadable when tail-truncated; middle-truncate keeps both ends.
+function truncateMiddle(text: string, maxLength = 48): string {
+  if (text.length <= maxLength) return text;
+  const half = Math.floor((maxLength - 1) / 2);
+  return `${text.slice(0, half)}…${text.slice(-half)}`;
+}
+
+const repoLabel = computed(() => truncateMiddle(props.result.metadata.repository));
 </script>
 
 <template>
   <div class="summary-bar">
     <div class="summary-bar__info">
-      <span class="repo" :title="result.metadata.repository">{{ result.metadata.repository }}</span>
+      <span class="repo" :title="result.metadata.repository">{{ repoLabel }}</span>
       <span class="sep">·</span>
       <span>{{ result.metadata.summary.totalFiles.toLocaleString() }} {{ uiText.result.filesUnit }}</span>
       <span class="sep">·</span>
@@ -68,7 +77,7 @@ const formattedTime = computed(() => formatTimestamp(props.result.metadata.times
 .repo {
   font-weight: 600;
   color: var(--amc-text, var(--vp-c-text-1));
-  max-width: 40%;
+  max-width: 60%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

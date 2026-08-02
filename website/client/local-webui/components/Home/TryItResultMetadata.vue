@@ -150,7 +150,6 @@ dt {
 dd {
   margin: 0;
   color: var(--amc-text, var(--vp-c-text-1));
-  text-transform: lowercase;
 }
 
 .unit {

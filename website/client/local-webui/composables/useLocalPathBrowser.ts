@@ -3,17 +3,17 @@ import { ApiError, browseLocalPathDirectories } from '../api/client';
 import type { LocalPathDirectoryListing } from '../types/api';
 import type { UseLocalPathBrowserOptions } from '../types/localPathBrowser';
 import {
-  createDefaultLocalPathBrowserState,
-  type LocalPathBrowserState,
-  loadLocalPathBrowserState,
-  saveLocalPathBrowserState,
-} from '../utils/tryItPersistence';
-import {
   buildLocalPathBreadcrumbs,
   filterLocalPathEntries,
   moveLocalPathSelection,
   pushRecentLocalPath,
 } from '../utils/tryIt/localPathBrowserNavigation';
+import {
+  createDefaultLocalPathBrowserState,
+  type LocalPathBrowserState,
+  loadLocalPathBrowserState,
+  saveLocalPathBrowserState,
+} from '../utils/tryItPersistence';
 
 export function useLocalPathBrowser({
   open,
@@ -181,21 +181,18 @@ export function useLocalPathBrowser({
     });
   }
 
-  watch(
-    open,
-    async (isOpen) => {
-      if (isOpen) {
-        browserState.value = loadLocalPathBrowserState();
-        searchQuery.value = '';
-        await loadDirectory(browserState.value.currentPath ?? undefined);
-        dialogRef.value?.focus();
-      } else if (listRef.value) {
-        persistBrowserState({
-          scrollTop: listRef.value.scrollTop,
-        });
-      }
-    },
-  );
+  watch(open, async (isOpen) => {
+    if (isOpen) {
+      browserState.value = loadLocalPathBrowserState();
+      searchQuery.value = '';
+      await loadDirectory(browserState.value.currentPath ?? undefined);
+      dialogRef.value?.focus();
+    } else if (listRef.value) {
+      persistBrowserState({
+        scrollTop: listRef.value.scrollTop,
+      });
+    }
+  });
 
   watch([() => listing.value?.entries, searchQuery], () => {
     const activeEntries = visibleEntries.value;

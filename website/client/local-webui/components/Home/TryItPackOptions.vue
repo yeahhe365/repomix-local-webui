@@ -39,31 +39,29 @@ const emit = defineEmits<{
 const uiText = useHomeUiText();
 const expanded = ref(false);
 
-  // Count how many pack options differ from their defaults — drives the header summary badge.
-  // `format` is shown separately via formatLabel, so it's excluded from the customization count.
-  const customCount = computed(() => {
-    const options: PackOptions = {
-      format: props.format,
-      removeComments: props.removeComments,
-      removeEmptyLines: props.removeEmptyLines,
-      showLineNumbers: props.showLineNumbers,
-      fileSummary: props.fileSummary,
-      directoryStructure: props.directoryStructure,
-      includePatterns: props.includePatterns,
-      ignorePatterns: props.ignorePatterns,
-      outputParsable: props.outputParsable,
-      compress: props.compress,
-    };
+// Count how many pack options differ from their defaults — drives the header summary badge.
+// `format` is shown separately via formatLabel, so it's excluded from the customization count.
+const customCount = computed(() => {
+  const options: PackOptions = {
+    format: props.format,
+    removeComments: props.removeComments,
+    removeEmptyLines: props.removeEmptyLines,
+    showLineNumbers: props.showLineNumbers,
+    fileSummary: props.fileSummary,
+    directoryStructure: props.directoryStructure,
+    includePatterns: props.includePatterns,
+    ignorePatterns: props.ignorePatterns,
+    outputParsable: props.outputParsable,
+    compress: props.compress,
+  };
 
-    return (Object.keys(DEFAULT_PACK_OPTIONS) as Array<keyof PackOptions>).reduce((count, key) => {
-      if (key === 'format') return count;
-      return options[key] === DEFAULT_PACK_OPTIONS[key] ? count : count + 1;
-    }, 0);
-  });
+  return (Object.keys(DEFAULT_PACK_OPTIONS) as Array<keyof PackOptions>).reduce((count, key) => {
+    if (key === 'format') return count;
+    return options[key] === DEFAULT_PACK_OPTIONS[key] ? count : count + 1;
+  }, 0);
+});
 
-const formatLabel = computed(
-  () => uiText.value.options.formatNames[props.format] ?? props.format,
-);
+const formatLabel = computed(() => uiText.value.options.formatNames[props.format] ?? props.format);
 
 function updateFormat(value: PackFormat) {
   emit('update:format', value);
@@ -108,11 +106,15 @@ function updateBooleanOption(
       <ChevronDown :size="16" class="options-accordion__chevron" />
       <span class="options-accordion__title">{{ uiText.options.accordion.title }}</span>
       <span class="options-accordion__summary">
-        {{ uiText.options.accordion.summary(formatLabel, customCount) }}
+        {{ customCount > 0 ? uiText.options.accordion.summary(formatLabel, customCount) : formatLabel }}
       </span>
     </button>
 
-    <div class="options-accordion__body">
+    <div
+      class="options-accordion__body"
+      :aria-hidden="!expanded"
+      :inert="!expanded"
+    >
       <div class="options-accordion__inner">
         <section class="options-section">
           <h4 class="options-section__title">{{ uiText.options.outputFormat }}</h4>

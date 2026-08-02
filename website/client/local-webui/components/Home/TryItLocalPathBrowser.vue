@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ChevronLeft, FolderOpen, LoaderCircle, RefreshCw, X } from 'lucide-vue-next';
-import { computed, toRef } from 'vue';
+import { Check, ChevronLeft, FolderOpen, LoaderCircle, Pencil, RefreshCw, X } from 'lucide-vue-next';
+import { computed, ref, toRef, watch } from 'vue';
 import { useLocalPathBrowser } from '../../composables/useLocalPathBrowser';
 import { useHomeUiText } from './useHomeUiText';
+import { isValidAbsolutePath } from '../../utils/tryIt/localPathInput';
 
 const props = defineProps<{
   open: boolean;
@@ -47,6 +48,73 @@ const {
   close: () => emit('update:open', false),
   select: (path) => emit('select', path),
 });
+
+// ── Direct path editing state ──
+const isEditingPath = ref(false);
+const pathDraft = ref('');
+const pathInputError = ref(false);
+const pathInputRef = ref<HTMLInputElement | null>(null);
+
+function startEditing() {
+  if (loading.value) return;
+  pathDraft.value = listing.value?.currentPath ?? '';
+  pathInputError.value = false;
+  isEditingPath.value = true;
+  // Auto-focus & select on next tick
+  setTimeout(() => {
+    pathInputRef.value?.focus();
+    pathInputRef.value?.select();
+  }, 0);
+}
+
+function cancelPathInput() {
+  isEditingPath.value = false;
+  pathDraft.value = '';
+  pathInputError.value = false;
+}
+
+async function applyPathInput() {
+  const trimmed = pathDraft.value.trim();
+  if (!trimmed) {
+    cancelPathInput();
+    return;
+  }
+  if (!isValidAbsolutePath(trimmed)) {
+    pathInputError.value = true;
+    return;
+  }
+  pathInputError.value = false;
+  isEditingPath.value = false;
+  await enterDirectory(trimmed);
+}
+
+function onPathInputKeydown(event: KeyboardEvent) {
+  if (event.key === 'Enter') {
+    event.stopPropagation();
+    event.preventDefault();
+    applyPathInput();
+  } else if (event.key === 'Escape') {
+    event.stopPropagation();
+    event.preventDefault();
+    cancelPathInput();
+  }
+}
+
+function onDialogKeydown(event: KeyboardEvent) {
+  if (isEditingPath.value && event.key === 'Escape') {
+    event.stopPropagation();
+    cancelPathInput();
+    return;
+  }
+  handleKeydown(event);
+}
+
+// Clear editing state when dialog closes
+watch(() => props.open, (isOpen) => {
+  if (!isOpen) {
+    cancelPathInput();
+  }
+});
 </script>
 
 <template>
@@ -59,23 +127,68 @@ const {
         aria-modal="true"
         tabindex="0"
         :aria-label="uiText.upload.localPathBrowserTitle"
-        @keydown="handleKeydown"
+        @keydown="onDialogKeydown"
       >
         <div class="browser-header">
           <div class="header-copy">
             <h3>{{ uiText.upload.localPathBrowserTitle }}</h3>
-            <div v-if="breadcrumbs.length" class="breadcrumbs" :aria-label="currentLabel">
+            <div v-if="!isEditingPath" class="breadcrumbs-row">
+              <div v-if="breadcrumbs.length" class="breadcrumbs" :aria-label="currentLabel">
+                <button
+                  v-for="crumb in breadcrumbs"
+                  :key="crumb.path"
+                  type="button"
+                  class="breadcrumb-button"
+                  @click="jumpToBreadcrumb(crumb.path)"
+                >
+                  {{ crumb.label }}
+                </button>
+              </div>
+              <p v-else class="root-label">{{ currentLabel }}</p>
               <button
-                v-for="crumb in breadcrumbs"
-                :key="crumb.path"
                 type="button"
-                class="breadcrumb-button"
-                @click="jumpToBreadcrumb(crumb.path)"
+                class="breadcrumb-edit-button icon-button"
+                :disabled="loading"
+                :aria-label="uiText.upload.breadcrumbEditAria"
+                :title="uiText.upload.breadcrumbEditAria"
+                @click="startEditing"
               >
-                {{ crumb.label }}
+                <Pencil :size="14" />
               </button>
             </div>
-            <p v-else class="root-label">{{ currentLabel }}</p>
+            <div v-else class="path-direct-row">
+              <input
+                ref="pathInputRef"
+                v-model="pathDraft"
+                type="text"
+                class="path-direct-input"
+                :class="{ 'is-invalid': pathInputError }"
+                :placeholder="uiText.upload.pathDirectPlaceholder"
+                :readonly="loading"
+                @keydown="onPathInputKeydown"
+              />
+              <button
+                type="button"
+                class="path-direct-apply icon-button"
+                :disabled="loading"
+                :aria-label="uiText.upload.pathDirectApplyAria"
+                :title="uiText.upload.pathDirectApplyAria"
+                @click="applyPathInput"
+              >
+                <Check :size="16" />
+              </button>
+              <button
+                type="button"
+                class="path-direct-cancel icon-button"
+                :disabled="loading"
+                :aria-label="uiText.upload.pathDirectCancelAria"
+                :title="uiText.upload.pathDirectCancelAria"
+                @click="cancelPathInput"
+              >
+                <X :size="16" />
+              </button>
+              <p v-if="pathInputError" class="path-direct-error">{{ uiText.upload.invalidLocalPath }}</p>
+            </div>
           </div>
           <button type="button" class="icon-button" :aria-label="uiText.upload.localPathBrowserClose" @click="emit('update:open', false)">
             <X :size="18" />

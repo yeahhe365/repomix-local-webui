@@ -29,7 +29,11 @@ const commandWithRepo = computed(() => {
 // Classify the error so we can show the right title color and quick actions.
 const kind = computed<'input' | 'network' | 'server'>(() => {
   const text = props.message.toLowerCase();
-  if (/invalid|valid|absolute|required|格式|路径/.test(text)) return 'input';
+  // Local-path allowlist / mount issues are configuration problems the user
+  // can fix, so they are treated as input (warning) rather than server failures.
+  if (/outside the allowed director|does not exist on the server|allowed roots|格式|路径/.test(text))
+    return 'input';
+  if (/invalid|valid|absolute|required/.test(text)) return 'input';
   if (/timed out|timeout|abort|network|failed to fetch|超时/.test(text)) return 'network';
   return 'server';
 });

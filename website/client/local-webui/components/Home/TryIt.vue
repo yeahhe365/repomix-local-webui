@@ -20,7 +20,8 @@
         <TryItPresets
           inline
           :mode="mode"
-          :local-path="inputLocalPath"
+          :source="inputLocalPath"
+          :format="packOptions.format"
           :include-patterns="packOptions.includePatterns"
           :ignore-patterns="packOptions.ignorePatterns"
           :loading="loading"
@@ -66,15 +67,15 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onMounted, watch } from 'vue';
-import { useToast } from '../../composables/useToast';
 import { usePackRequest } from '../../composables/usePackRequest';
+import { useToast } from '../../composables/useToast';
 import type { FileInfo } from '../../types/api';
 import type { PackFormat } from '../../types/pack';
 import { isBot } from '../../utils/botDetect';
 import { isValidRemoteValue } from '../../utils/tryIt/remoteValidation';
 import { clearLocalPathBrowserState, clearTryItPageState } from '../../utils/tryItPersistence';
 import type { TryItPreset } from '../../utils/tryItPresets';
-import { derivePresetNameFromPath, upsertTryItPreset } from '../../utils/tryItPresets';
+import { derivePresetNameFromPath, presetToPageState, upsertTryItPreset } from '../../utils/tryItPresets';
 import type { RecentPack } from '../../utils/tryItRecentPacks';
 import { hasNonDefaultValues, parseUrlParameters, updateUrlParameters } from '../../utils/urlParams';
 import TryItInputRow from './TryItInputRow.vue';
@@ -230,10 +231,19 @@ function handlePackDownload() {
 }
 
 function handleApplyPreset(preset: TryItPreset) {
-  mode.value = 'localPath';
-  inputLocalPath.value = preset.localPath;
-  packOptions.includePatterns = preset.includePatterns;
-  packOptions.ignorePatterns = preset.ignorePatterns;
+  const state = presetToPageState(preset);
+  mode.value = state.mode;
+  if (state.mode === 'url') {
+    inputUrl.value = state.source;
+    inputLocalPath.value = '';
+  } else if (state.mode === 'localPath') {
+    inputLocalPath.value = state.source;
+    inputUrl.value = '';
+  }
+  // file mode cannot restore the File object; only restore format + patterns
+  packOptions.format = state.format;
+  packOptions.includePatterns = state.includePatterns;
+  packOptions.ignorePatterns = state.ignorePatterns;
   uploadedFile.value = null;
 }
 
@@ -288,7 +298,9 @@ watch(result, (next) => {
       onAction: () => {
         upsertTryItPreset({
           name: derivePresetNameFromPath(inputLocalPath.value),
-          localPath: inputLocalPath.value,
+          mode: 'localPath',
+          source: inputLocalPath.value,
+          format: packOptions.format,
           includePatterns: packOptions.includePatterns,
           ignorePatterns: packOptions.ignorePatterns,
         });
@@ -341,10 +353,11 @@ onMounted(() => {
   margin-bottom: var(--amc-space-3, 12px);
 }
 
-/* Sibling selector: draw the divider only when both groups are present. */
-.quick-picks > .presets-section + .recent-section {
-  border-left: 1px solid var(--amc-border, var(--vp-c-border));
-  padding-left: 10px;
-  margin-left: 2px;
+/* :has() draws the divider whenever both groups coexist, independent of DOM order.
+ * Supported in Chrome 105+, Safari 15.4+, Firefox 121+. */
+.quick-picks:has(> .recent-section) > .presets-section {
+  border-right: 1px solid var(--amc-border, var(--vp-c-border));
+  padding-right: 10px;
+  margin-right: 2px;
 }
 </style>

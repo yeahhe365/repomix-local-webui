@@ -35,7 +35,14 @@ function checked(event: Event) {
 }
 
 interface ToggleDef {
-  key: 'fileSummary' | 'directoryStructure' | 'showLineNumbers' | 'outputParsable' | 'compress' | 'removeComments' | 'removeEmptyLines';
+  key:
+    | 'fileSummary'
+    | 'directoryStructure'
+    | 'showLineNumbers'
+    | 'outputParsable'
+    | 'compress'
+    | 'removeComments'
+    | 'removeEmptyLines';
   label: string;
   hint: string;
   emitName:
@@ -114,6 +121,11 @@ const visibleToggles = computed(() => {
           type="checkbox"
           class="checkbox-input"
         />
+        <span class="checkbox-box" aria-hidden="true">
+          <svg class="checkbox-mark" viewBox="0 0 10 8" fill="none" aria-hidden="true">
+            <path d="M1 4.2 3.6 6.8 9 1.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </span>
         <span>{{ toggle.label }}</span>
       </label>
       <p class="checkbox-hint">{{ toggle.hint }}</p>
@@ -144,14 +156,85 @@ const visibleToggles = computed(() => {
 }
 
 .checkbox-input {
-  width: 15px;
-  height: 15px;
-  accent-color: var(--amc-accent, var(--vp-c-brand-1));
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  margin: 0;
+  pointer-events: none;
+}
+
+/* Custom box replaces the native control; keeps a 24px hit area for comfortable tapping. */
+.checkbox-box {
+  width: 16px;
+  height: 16px;
   flex-shrink: 0;
+  border: 1px solid var(--amc-border-strong, var(--vp-c-border));
+  border-radius: 4px;
+  background: var(--amc-surface, var(--vp-c-bg));
+  color: var(--amc-accent-on, #fff);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    border-color var(--amc-transition, 0.15s ease),
+    background-color var(--amc-transition, 0.15s ease),
+    box-shadow var(--amc-transition, 0.15s ease);
+}
+
+.checkbox-mark {
+  width: 10px;
+  height: 8px;
+  opacity: 0;
+  transform: scale(0.5);
+  transition:
+    opacity var(--amc-transition, 0.15s ease),
+    transform var(--amc-transition, 0.15s ease);
+}
+
+.checkbox-label:hover .checkbox-box {
+  border-color: var(--amc-accent, var(--vp-c-brand-1));
+}
+
+.checkbox-input:checked + .checkbox-box {
+  background: var(--amc-accent, var(--vp-c-brand-1));
+  border-color: var(--amc-accent, var(--vp-c-brand-1));
+}
+
+.checkbox-input:checked + .checkbox-box .checkbox-mark {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.checkbox-input:focus-visible + .checkbox-box {
+  outline: 2px solid var(--amc-accent, var(--vp-c-brand-1));
+  outline-offset: 2px;
+}
+
+.checkbox-input:disabled + .checkbox-box {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.checkbox-input:indeterminate + .checkbox-box {
+  background: var(--amc-accent, var(--vp-c-brand-1));
+  border-color: var(--amc-accent, var(--vp-c-brand-1));
+}
+
+.checkbox-input:indeterminate + .checkbox-box .checkbox-mark {
+  opacity: 0;
+}
+
+.checkbox-input:indeterminate + .checkbox-box::after {
+  content: '';
+  width: 8px;
+  height: 2px;
+  border-radius: var(--amc-radius-pill, 999px);
+  background: var(--amc-accent-on, #fff);
 }
 
 .checkbox-hint {
-  margin: 0 0 0 23px;
+  margin: 0 0 0 24px;
   font-size: var(--amc-text-xs, 12px);
   color: var(--amc-text-subtle, var(--vp-c-text-3));
   line-height: 1.4;

@@ -54,7 +54,8 @@ export const validateFileList = (
     const limitMB = formatFileSizeMB(maxFileSize, 0);
     return {
       valid: false,
-      error: messages?.totalSizeTooLarge?.(sizeMB, limitMB) ?? `Total size (${sizeMB}MB) exceeds the ${limitMB}MB limit`,
+      error:
+        messages?.totalSizeTooLarge?.(sizeMB, limitMB) ?? `Total size (${sizeMB}MB) exceeds the ${limitMB}MB limit`,
     };
   }
 

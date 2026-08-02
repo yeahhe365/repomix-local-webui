@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { Check, Copy, Download, Share, Terminal } from 'lucide-vue-next';
+import { Check, Copy, Download, Maximize2, Minimize2, Share, Terminal } from 'lucide-vue-next';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { useToast } from '../../composables/useToast';
 import type { PackResult } from '../../types/api';
 import type { PackOptions } from '../../types/pack';
-import { canShareFiles, copyToClipboard, downloadResult, shareResult } from '../../utils/tryIt/resultViewer';
 import { generateCliCommand } from '../../utils/tryIt/cliCommand';
-import { useToast } from '../../composables/useToast';
+import { canShareFiles, copyToClipboard, downloadResult, shareResult } from '../../utils/tryIt/resultViewer';
 import { useHomeUiText } from './useHomeUiText';
 
 const props = withDefaults(
@@ -13,12 +13,18 @@ const props = withDefaults(
     result: PackResult;
     variant?: 'default' | 'floating';
     packOptions?: PackOptions;
+    fullscreen?: boolean;
   }>(),
   {
     variant: 'default',
     packOptions: undefined,
+    fullscreen: false,
   },
 );
+
+const emit = defineEmits<{
+  'toggle-fullscreen': [];
+}>();
 
 const uiText = useHomeUiText();
 const { showToast } = useToast();
@@ -150,6 +156,16 @@ onUnmounted(() => {
     >
       <Check v-if="commandCopied" :size="16" />
       <Terminal v-else :size="16" />
+    </button>
+    <button
+      v-if="isFloating"
+      class="action-button action-button--icon"
+      @click="emit('toggle-fullscreen')"
+      :aria-label="fullscreen ? uiText.actions.exitFullscreen : uiText.actions.fullscreen"
+      :title="fullscreen ? uiText.actions.exitFullscreen : uiText.actions.fullscreen"
+    >
+      <Minimize2 v-if="fullscreen" :size="16" />
+      <Maximize2 v-else :size="16" />
     </button>
     <button
       class="action-button"
