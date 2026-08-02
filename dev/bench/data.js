@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1785326313708,
+  "lastUpdate": 1785661767747,
   "repoUrl": "https://github.com/yeahhe365/repomix-local-webui",
   "entries": {
     "Repomix Performance": [
@@ -808,6 +808,51 @@ window.BENCHMARK_DATA = {
             "range": "±300",
             "unit": "ms",
             "extra": "Median of 20 runs\nQ1: 2506ms, Q3: 2806ms\nAll times: 2462, 2484, 2485, 2491, 2492, 2506, 2508, 2525, 2529, 2554, 2572, 2601, 2665, 2794, 2799, 2806, 2811, 2880, 2897, 2901ms"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "64304674+yeahhe365@users.noreply.github.com",
+            "name": "从何开始123",
+            "username": "yeahhe365"
+          },
+          "committer": {
+            "email": "64304674+yeahhe365@users.noreply.github.com",
+            "name": "从何开始123",
+            "username": "yeahhe365"
+          },
+          "distinct": true,
+          "id": "6170003933455349e8d716500271b91407f09678",
+          "message": "feat(local-webui): add preset manager and refine TryIt flow\n\n- add TryItPresetManager component and expand preset system\n- improve local path browser navigation and accessibility\n- enhance result viewer content, metadata and error rendering\n- add resultViewer unit test and update coverage\n\nCo-Authored-By: Claude Fable 5 <noreply@anthropic.com>",
+          "timestamp": "2026-08-02T17:06:57+08:00",
+          "tree_id": "5514d7da389aaa1b561c96968b18a7b1a49eda08",
+          "url": "https://github.com/yeahhe365/repomix-local-webui/commit/6170003933455349e8d716500271b91407f09678"
+        },
+        "date": 1785661767262,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Repomix Pack (macOS)",
+            "value": 1396,
+            "range": "±215",
+            "unit": "ms",
+            "extra": "Median of 30 runs\nQ1: 1286ms, Q3: 1501ms\nAll times: 1221, 1226, 1232, 1251, 1254, 1262, 1264, 1286, 1299, 1299, 1330, 1333, 1367, 1377, 1391, 1396, 1410, 1424, 1439, 1457, 1482, 1500, 1501, 1507, 1547, 1609, 1689, 1690, 1835, 1878ms"
+          },
+          {
+            "name": "Repomix Pack (Linux)",
+            "value": 1963,
+            "range": "±42",
+            "unit": "ms",
+            "extra": "Median of 20 runs\nQ1: 1938ms, Q3: 1980ms\nAll times: 1879, 1915, 1926, 1932, 1938, 1938, 1944, 1946, 1955, 1955, 1963, 1973, 1973, 1974, 1978, 1980, 1981, 1988, 1989, 1990ms"
+          },
+          {
+            "name": "Repomix Pack (Windows)",
+            "value": 2553,
+            "range": "±68",
+            "unit": "ms",
+            "extra": "Median of 19 runs\nQ1: 2526ms, Q3: 2594ms\nAll times: 2477, 2494, 2508, 2524, 2526, 2538, 2543, 2544, 2551, 2553, 2554, 2558, 2559, 2568, 2594, 2596, 2602, 2623, 2628ms"
           }
         ]
       }
