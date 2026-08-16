@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1785661767747,
+  "lastUpdate": 1786868792095,
   "repoUrl": "https://github.com/yeahhe365/repomix-local-webui",
   "entries": {
     "Repomix Performance": [
@@ -853,6 +853,51 @@ window.BENCHMARK_DATA = {
             "range": "±68",
             "unit": "ms",
             "extra": "Median of 19 runs\nQ1: 2526ms, Q3: 2594ms\nAll times: 2477, 2494, 2508, 2524, 2526, 2538, 2543, 2544, 2551, 2553, 2554, 2558, 2559, 2568, 2594, 2596, 2602, 2623, 2628ms"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "64304674+yeahhe365@users.noreply.github.com",
+            "name": "从何开始123",
+            "username": "yeahhe365"
+          },
+          "committer": {
+            "email": "64304674+yeahhe365@users.noreply.github.com",
+            "name": "从何开始123",
+            "username": "yeahhe365"
+          },
+          "distinct": true,
+          "id": "30be56f95ef342bafcf51e9fe8062582191b8c51",
+          "message": "chore: add claude launch config and e2e tmp test",
+          "timestamp": "2026-08-16T16:19:39+08:00",
+          "tree_id": "cd256c667a2c7aad9c286109adf3cafe49f9c019",
+          "url": "https://github.com/yeahhe365/repomix-local-webui/commit/30be56f95ef342bafcf51e9fe8062582191b8c51"
+        },
+        "date": 1786868791310,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Repomix Pack (macOS)",
+            "value": 1555,
+            "range": "±563",
+            "unit": "ms",
+            "extra": "Median of 30 runs\nQ1: 1334ms, Q3: 1897ms\nAll times: 1164, 1169, 1213, 1227, 1265, 1280, 1299, 1334, 1350, 1425, 1447, 1451, 1492, 1531, 1540, 1555, 1636, 1746, 1748, 1765, 1795, 1816, 1897, 1897, 1911, 1916, 2006, 2119, 2121, 2188ms"
+          },
+          {
+            "name": "Repomix Pack (Linux)",
+            "value": 2024,
+            "range": "±48",
+            "unit": "ms",
+            "extra": "Median of 20 runs\nQ1: 2005ms, Q3: 2053ms\nAll times: 1961, 1984, 1988, 1995, 1999, 2005, 2007, 2008, 2014, 2016, 2024, 2028, 2029, 2029, 2032, 2053, 2059, 2061, 2116, 2477ms"
+          },
+          {
+            "name": "Repomix Pack (Windows)",
+            "value": 2358,
+            "range": "±35",
+            "unit": "ms",
+            "extra": "Median of 20 runs\nQ1: 2348ms, Q3: 2383ms\nAll times: 2308, 2330, 2332, 2335, 2336, 2348, 2349, 2351, 2352, 2353, 2358, 2368, 2371, 2372, 2377, 2383, 2386, 2391, 2393, 2424ms"
           }
         ]
       }
