@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "vitepress-dev",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["vitepress", "dev", "/Volumes/WD_BLACK/Code/repomix-local-webui/website/client", "--port", "5175"],
+      "port": 5175
+    }
+  ]
+}
